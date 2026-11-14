@@ -66,6 +66,13 @@ public class AstronautController : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        moveInput = Vector2.zero;
+        if (animator != null)
+            animator.SetBool("IsMoving", false);
+    }
+
     private void FixedUpdate()
     {
         rb.MovePosition(
