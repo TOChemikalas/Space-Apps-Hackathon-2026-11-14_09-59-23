@@ -1,10 +1,36 @@
 using System;
 using UnityEngine;
 
-// Owns its crop state. Duplicated prefab instances bind to their greenhouse once.
+// Owns six independent plant slots. Duplicated prefabs start with empty slots.
 [RequireComponent(typeof(GrowingBedMenu))]
 public sealed class GrowingBed : MonoBehaviour
 {
+    internal const int SlotColumns = 3;
+    internal const int SlotRows = 2;
+    internal const int SlotCount = SlotColumns * SlotRows;
+
+    internal sealed class PlantSlot
+    {
+        public CropDefinition Crop { get; private set; }
+        public CropProgress Progress { get; } = new CropProgress();
+        public Sprite Sprite => Crop ? Crop.SpriteAt(Progress.Stage) : null;
+
+        public bool Plant(CropDefinition crop)
+        {
+            if (!crop || !crop.IsValid || !Progress.Plant(crop.DurationSeconds)) return false;
+            Crop = crop;
+            return true;
+        }
+
+        public CropDefinition Harvest()
+        {
+            if (!Progress.Harvest()) return null;
+            CropDefinition harvested = Crop;
+            Crop = null;
+            return harvested;
+        }
+    }
+
     [SerializeField] string bedId;
     [SerializeField] BoxCollider2D solidBoundary;
     [SerializeField] SpriteRenderer cropRenderer;
@@ -12,18 +38,23 @@ public sealed class GrowingBed : MonoBehaviour
     [SerializeField, Min(0)] float growthMultiplier = 1;
     public float EnvironmentMultiplier { get; set; } = 1;
     public string Id => bedId;
-    public CropDefinition Crop { get; private set; }
-    public CropProgress Progress { get; } = new CropProgress();
-    public double RemainingSeconds => growthMultiplier * EnvironmentMultiplier > 0
-        ? (Progress.DurationSeconds - Progress.ElapsedSeconds) / (growthMultiplier * EnvironmentMultiplier)
-        : double.PositiveInfinity;
     public BoxCollider2D Boundary => solidBoundary;
     public GreenhouseInteractionUI Greenhouse { get; private set; }
     public GrowingBedMenu Menu { get; private set; }
 
     LineRenderer outline;
     Material outlineMaterial;
-    int shownStage = -2;
+    readonly PlantSlot[] slots = new PlantSlot[SlotCount];
+    readonly SpriteRenderer[] slotRenderers = new SpriteRenderer[SlotCount];
+
+    internal PlantSlot GetSlot(int index) => slots[index];
+
+    internal double RemainingSeconds(int index)
+    {
+        var progress = slots[index].Progress;
+        float multiplier = growthMultiplier * EnvironmentMultiplier;
+        return multiplier > 0 ? (progress.DurationSeconds - progress.ElapsedSeconds) / multiplier : double.PositiveInfinity;
+    }
 
     void Awake()
     {
@@ -48,7 +79,23 @@ public sealed class GrowingBed : MonoBehaviour
         outline.SetPosition(2, new Vector3(center.x + half.x, center.y + half.y, -.1f));
         outline.SetPosition(3, new Vector3(center.x - half.x, center.y + half.y, -.1f));
         outline.enabled = false;
-        RefreshSprite();
+        CreateSlots();
+    }
+
+    void CreateSlots()
+    {
+        Vector3 center = cropRenderer.transform.localPosition;
+        for (int i = 0; i < SlotCount; i++)
+        {
+            slots[i] = new PlantSlot();
+            SpriteRenderer renderer = i == 0 ? cropRenderer : Instantiate(cropRenderer, cropRenderer.transform.parent);
+            renderer.name = $"Crop slot {i + 1}";
+            renderer.sprite = null;
+            renderer.transform.localPosition = center + new Vector3(
+                (i % SlotColumns + .5f - SlotColumns * .5f) * cropVisualSize.x / SlotColumns,
+                (SlotRows * .5f - i / SlotColumns - .5f) * cropVisualSize.y / SlotRows, 0);
+            slotRenderers[i] = renderer;
+        }
     }
 
     void OnEnable()
@@ -70,39 +117,44 @@ public sealed class GrowingBed : MonoBehaviour
 
     void OnAdvanced(double from, double to)
     {
-        Progress.Advance(from, to, growthMultiplier * EnvironmentMultiplier);
-        RefreshSprite();
+        float multiplier = growthMultiplier * EnvironmentMultiplier;
+        for (int i = 0; i < SlotCount; i++)
+        {
+            PlantSlot slot = slots[i];
+            int stage = slot.Progress.Stage;
+            slot.Progress.Advance(from, to, multiplier);
+            if (slot.Progress.Stage != stage) RefreshSprite(i);
+        }
     }
 
-    public bool Plant(CropDefinition crop)
+    internal bool Plant(int index, CropDefinition crop)
     {
-        if (!crop || !crop.IsValid || !Progress.Plant(crop.DurationSeconds)) return false;
-        Crop = crop;
-        RefreshSprite();
+        if (!slots[index].Plant(crop)) return false;
+        RefreshSprite(index);
         return true;
     }
 
-    public bool Harvest()
+    internal bool Harvest(int index)
     {
-        if (!Greenhouse || !Progress.Harvest()) return false;
-        Greenhouse.RecordHarvest(Crop);
-        Crop = null;
-        RefreshSprite();
+        if (!Greenhouse) return false;
+        CropDefinition harvested = slots[index].Harvest();
+        if (!harvested) return false;
+        Greenhouse.RecordHarvest(harvested);
+        RefreshSprite(index);
         return true;
     }
 
     public void Highlight(bool visible) => outline.enabled = visible;
 
-    void RefreshSprite()
+    void RefreshSprite(int index)
     {
-        int stage = Progress.Stage;
-        if (stage == shownStage) return;
-        shownStage = stage;
-        cropRenderer.sprite = Crop ? Crop.SpriteAt(stage) : null;
-        if (!cropRenderer.sprite) return;
-        Vector2 size = cropRenderer.sprite.bounds.size;
-        float scale = Mathf.Min(cropVisualSize.x / size.x, cropVisualSize.y / size.y);
-        cropRenderer.transform.localScale = new Vector3(scale, scale, 1);
+        SpriteRenderer renderer = slotRenderers[index];
+        Sprite sprite = slots[index].Sprite;
+        renderer.sprite = sprite;
+        if (!sprite) return;
+        Vector2 size = sprite.bounds.size;
+        float scale = Mathf.Min(cropVisualSize.x / (SlotColumns * size.x), cropVisualSize.y / (SlotRows * size.y));
+        renderer.transform.localScale = new Vector3(scale, scale, 1);
     }
 
     void OnTriggerEnter2D(Collider2D other)

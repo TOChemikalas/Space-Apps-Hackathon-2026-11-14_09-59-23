@@ -14,6 +14,8 @@ public class AstronautController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private Vector2 facing = Vector2.down;
+    private Transform visual;
+    private Vector3 defaultVisualScale;
 
     private void Awake()
     {
@@ -21,6 +23,20 @@ public class AstronautController : MonoBehaviour
 
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
+
+        if (animator != null && animator.transform != transform && animator.transform.IsChildOf(transform))
+        {
+            visual = animator.transform;
+            defaultVisualScale = visual.localScale;
+        }
+    }
+
+    public void SetVisualScale(float multiplier)
+    {
+        if (visual == null) return;
+
+        visual.localScale = new Vector3(defaultVisualScale.x * multiplier, defaultVisualScale.y * multiplier,
+            defaultVisualScale.z);
     }
 
     private void Update()
