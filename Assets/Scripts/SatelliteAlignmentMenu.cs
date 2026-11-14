@@ -43,6 +43,7 @@ public sealed class SatelliteAlignmentMenu : MonoBehaviour
     public void Back()
     {
         Hide();
+        EventSystem.current?.SetSelectedGameObject(null);
         back?.Invoke();
     }
 
@@ -156,7 +157,8 @@ public sealed class SatelliteAlignmentMenu : MonoBehaviour
         bool offScreen = Math.Abs(state.AzimuthError) > monitor.HalfSpan.x || Math.Abs(state.ElevationError) > monitor.HalfSpan.y;
         status.text = state.IsLocked ? "Target acquired — SIGNAL LOCKED" : state.CanAcquire
             ? $"ALIGNING — hold {state.HeldSeconds:0.0} / {state.RequiredHoldSeconds:0.0} seconds"
-            : offScreen ? "SEARCHING — aim outside monitor range" : $"SEARCHING — angular error {state.Error:0.0}°";
+            : offScreen ? "SEARCHING — aim outside monitor range"
+            : $"SEARCHING — error {state.Error:0.0}°; target ≥{state.RequiredSignalPercent:0.##}%";
         acquired.text = state.IsLocked ? "SIGNAL LOCKED" : state.CanAcquire ? "TARGET ACQUIRED — HOLD" : "ALIGN DISH TO TARGET";
         acquired.color = link.color = state.IsLocked ? Green : Orange;
         link.text = state.IsLocked ? "SIGNAL LOCKED" : "LINK OFFLINE";

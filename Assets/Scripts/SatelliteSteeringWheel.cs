@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 // The hit rectangle stays fixed; only drawn spokes rotate, avoiding transform feedback during dragging.
-public sealed class SatelliteSteeringWheel : MaskableGraphic, IPointerDownHandler, IDragHandler,
+public sealed class SatelliteSteeringWheel : MaskableGraphic, IPointerDownHandler, IInitializePotentialDragHandler, IDragHandler,
     IPointerUpHandler, ICanvasRaycastFilter
 {
     public Action<float> Turned;
@@ -28,6 +28,8 @@ public sealed class SatelliteSteeringWheel : MaskableGraphic, IPointerDownHandle
         hasAngle = false;
         ReadPointer(data);
     }
+
+    public void OnInitializePotentialDrag(PointerEventData data) => data.useDragThreshold = false;
 
     public void OnDrag(PointerEventData data)
     {

@@ -22,7 +22,7 @@ public sealed class ElectricalControls : MonoBehaviour
     [SerializeField] DishAlignmentModel dish = new DishAlignmentModel();
     public DishAlignmentModel Dish => dish;
     public bool IsSatelliteAligned => dish.IsLocked;
-    public event Action SatelliteAligned;
+    public event System.Action SatelliteAligned;
     [SerializeField] LayerMask obstacleMask = 1 << 6;
     readonly HashSet<ElectricalInteractable> candidates = new HashSet<ElectricalInteractable>();
     readonly RaycastHit2D[] obstruction = new RaycastHit2D[1];
@@ -367,11 +367,14 @@ public sealed class ElectricalControls : MonoBehaviour
     {
         Set(communicationsSignal, $"{dish.Signal * 100:0.0}% Signal strength");
         Set(communicationsLink, dish.IsLocked ? "Locked" : "Offline");
+        communicationsSignal.color = Color.Lerp(Orange, Green, (float)dish.Signal);
+        communicationsLink.color = dish.IsLocked ? Green : Orange;
     }
 
     public void NotifySatelliteAligned()
     {
-        RefreshCommunications();
+        if (!dish.IsLocked) return;
+        if (communicationsSignal) RefreshCommunications();
         SatelliteAligned?.Invoke();
     }
 

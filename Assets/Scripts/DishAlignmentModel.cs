@@ -23,6 +23,7 @@ public sealed class DishAlignmentModel
     public double Error => Math.Sqrt(AzimuthError * AzimuthError + ElevationError * ElevationError);
     public double Tolerance => toleranceDegrees;
     public double RequiredHoldSeconds => holdSeconds;
+    public double RequiredSignalPercent => successSignalPercent;
     public double HeldSeconds => heldSeconds;
     public bool IsLocked { get; private set; }
     // The configured success percentage occurs at the tolerance boundary; accuracy stays monotonic.
