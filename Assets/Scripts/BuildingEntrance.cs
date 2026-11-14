@@ -13,6 +13,7 @@ public class BuildingEntrance : MonoBehaviour
     [SerializeField] Vector2 interiorSize = new Vector2(25, 12.5f);
     [SerializeField] bool preserveExteriorZoom;
     [SerializeField, Min(0)] float transitionCooldown = .5f;
+    [SerializeField] AirlockCycle airlock;
     float blockedUntil;
     bool hasEntered;
     Transform cameraParent;
@@ -21,9 +22,34 @@ public class BuildingEntrance : MonoBehaviour
 
     protected void OnTriggerEnter2D(Collider2D other)
     {
+        if (!CanTransition(other)) return;
+        if (airlock && airlock.isActiveAndEnabled && airlock.IsConfigured)
+        {
+            airlock.RequestTransition(this, other);
+            return;
+        }
+        Transition();
+    }
+
+    protected void OnTriggerExit2D(Collider2D other)
+    {
+        if (airlock) airlock.LeaveTrigger(this, other);
+    }
+
+    public void CompleteAirlockTransition(Collider2D other)
+    {
+        if (CanTransition(other)) Transition();
+    }
+
+    bool CanTransition(Collider2D other)
+    {
         if (!pairedDoor || !arrival || !worldCamera || !player || other.attachedRigidbody != player
-            || Time.unscaledTime < blockedUntil) return;
-        if (entersInterior ? hasEntered : !pairedDoor.hasEntered) return;
+            || Time.unscaledTime < blockedUntil) return false;
+        return entersInterior ? !hasEntered : pairedDoor.hasEntered;
+    }
+
+    void Transition()
+    {
         blockedUntil = pairedDoor.blockedUntil = Time.unscaledTime + transitionCooldown;
         OnTransition(entersInterior);
         player.linearVelocity = Vector2.zero;

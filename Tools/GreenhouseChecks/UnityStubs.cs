@@ -47,3 +47,11 @@ public class GreenhouseInteractionUI : UnityEngine.Object
     public bool IsInside { get; private set; }
     public void SetInside(bool inside) => IsInside = inside;
 }
+// Optional airlock is absent in these existing building/greenhouse transition checks.
+public class AirlockCycle : UnityEngine.Object
+{
+    public bool isActiveAndEnabled;
+    public bool IsConfigured => false;
+    public void RequestTransition(BuildingEntrance portal, UnityEngine.Collider2D other) { }
+    public void LeaveTrigger(BuildingEntrance portal, UnityEngine.Collider2D other) { }
+}
