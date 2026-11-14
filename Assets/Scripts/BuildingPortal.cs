@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,15 @@ public sealed class BuildingPortal : MonoBehaviour
     [SerializeField] bool entersInterior;
     [SerializeField, Min(0)] float transitionCooldown = .5f;
     [SerializeField] AirlockCycle airlock;
+    [Header("Additive building interior")]
+    [SerializeField] SceneSpawn exteriorReturn;
+    [SerializeField] MarsClock colonyClock;
+    [SerializeField] Camera colonyCamera;
+    [SerializeField] Collider2D exteriorGate;
+    [SerializeField] SpriteRenderer exteriorGateRenderer;
+    BuildingInterior loadedInterior;
+    Collider2D nearbyCollider;
+    bool loadingInterior;
     float blockedUntil;
     Rigidbody2D nearbyPlayer;
     InputAction interact;
@@ -24,7 +34,7 @@ public sealed class BuildingPortal : MonoBehaviour
 
     public string Prompt => "E: " + prompt;
 
-    public bool CanUse => isActiveAndEnabled && nearbyPlayer && !sceneTransitionInProgress
+    public bool CanUse => isActiveAndEnabled && nearbyPlayer && !sceneTransitionInProgress && !loadingInterior
         && (arrival || !string.IsNullOrWhiteSpace(destinationScene)) && Time.unscaledTime >= blockedUntil
         && (!greenhouse || greenhouse.IsInside != entersInterior);
 
@@ -38,7 +48,7 @@ public sealed class BuildingPortal : MonoBehaviour
 
     void LateUpdate()
     {
-        if (greenhouse || (airlock && airlock.isActiveAndEnabled) || !promptCanvas) return;
+        if (greenhouse || exteriorGate || (airlock && airlock.isActiveAndEnabled) || !promptCanvas) return;
         if (!promptOverlay && CanUse)
         {
             RectTransform overlay = GreenhouseCanvas.Overlay(promptCanvas, name + " prompt");
@@ -58,8 +68,11 @@ public sealed class BuildingPortal : MonoBehaviour
         Rigidbody2D player = other.attachedRigidbody;
         if (!player || !player.TryGetComponent<AstronautController>(out var astronaut) || !astronaut.isActiveAndEnabled) return;
         nearbyPlayer = player;
+        nearbyCollider = other;
         if (greenhouse) greenhouse.DoorEntered(this);
-        if (airlock && airlock.isActiveAndEnabled && airlock.IsConfigured)
+        if (exteriorReturn && exteriorGate)
+            RequestInterior();
+        else if (airlock && airlock.isActiveAndEnabled && airlock.IsConfigured)
             airlock.RequestTransition(this, other);
     }
 
@@ -78,12 +91,14 @@ public sealed class BuildingPortal : MonoBehaviour
 
     void OnDestroy()
     {
+        SceneManager.sceneLoaded -= BindLoadedScene;
         if (promptOverlay) Destroy(promptOverlay);
     }
 
     void ClearNearbyPlayer()
     {
         nearbyPlayer = null;
+        nearbyCollider = null;
         if (greenhouse) greenhouse.DoorExited(this);
     }
 
@@ -93,6 +108,11 @@ public sealed class BuildingPortal : MonoBehaviour
         if (!CanUse || lastInteractionFrame == Time.frameCount) return;
         lastInteractionFrame = Time.frameCount;
 
+        if (exteriorReturn)
+        {
+            RequestInterior();
+            return;
+        }
         if (arrival)
         {
             PlaceNearbyPlayer();
@@ -112,6 +132,66 @@ public sealed class BuildingPortal : MonoBehaviour
             FinishTransition();
     }
 
+    void RequestInterior()
+    {
+        if (!CanUse) return;
+        if (!loadedInterior)
+        {
+            var scene = SceneManager.GetSceneByName(destinationScene);
+            if (scene.isLoaded) BindLoadedScene(scene, LoadSceneMode.Additive);
+        }
+        if (loadedInterior) EnterLoadedInterior();
+        else if (!SceneManager.GetSceneByName(destinationScene).isLoaded) StartCoroutine(LoadInterior());
+    }
+
+    IEnumerator LoadInterior()
+    {
+        if (!Application.CanStreamedLevelBeLoaded(destinationScene))
+        {
+            Debug.LogError($"Add scene '{destinationScene}' to the Build Profiles scene list.", this);
+            yield break;
+        }
+
+        loadingInterior = true;
+        SceneManager.sceneLoaded += BindLoadedScene;
+        var load = SceneManager.LoadSceneAsync(destinationScene, LoadSceneMode.Additive);
+        if (load != null) yield return load;
+        SceneManager.sceneLoaded -= BindLoadedScene;
+        loadingInterior = false;
+        if (loadedInterior && CanUse) EnterLoadedInterior();
+    }
+
+    void BindLoadedScene(Scene scene, LoadSceneMode mode)
+    {
+        if (mode != LoadSceneMode.Additive || scene.name != destinationScene) return;
+        foreach (GameObject root in scene.GetRootGameObjects())
+        {
+            if (!root.TryGetComponent(out BuildingInterior interior) || !interior.Arrival || interior.Arrival.Id != arrivalSpawnId) continue;
+            loadedInterior = interior;
+            interior.Bind(this, exteriorReturn, colonyClock, colonyCamera, promptCanvas, exteriorGate, exteriorGateRenderer);
+            return;
+        }
+
+        Debug.LogError($"Scene '{scene.name}' needs a BuildingInterior with spawn '{arrivalSpawnId}'.", this);
+    }
+
+    void EnterLoadedInterior()
+    {
+        loadedInterior.Open();
+        arrival = loadedInterior.Arrival;
+        pairedDoor = loadedInterior.Exit;
+        airlock = loadedInterior.Airlock;
+        if (airlock) airlock.RequestTransition(this, nearbyCollider);
+        else PlaceNearbyPlayer();
+    }
+
+    internal void BindExit(BuildingPortal entrance, SceneSpawn outside, BuildingInterior interior)
+    {
+        pairedDoor = entrance;
+        arrival = outside;
+        loadedInterior = interior;
+    }
+
     public bool CompleteAirlockTransition(Collider2D other)
     {
         if (!CanUse || !arrival || other.attachedRigidbody != nearbyPlayer) return false;
@@ -125,6 +205,11 @@ public sealed class BuildingPortal : MonoBehaviour
         if (pairedDoor) pairedDoor.blockedUntil = blockedUntil;
         if (greenhouse) greenhouse.SetInside(entersInterior);
         arrival.PlacePlayer(nearbyPlayer);
+        if (loadedInterior)
+        {
+            if (entersInterior) loadedInterior.Entered();
+            else if (!airlock) loadedInterior.Close();
+        }
     }
 
     private static void SceneFinishedLoading(Scene scene, LoadSceneMode mode)

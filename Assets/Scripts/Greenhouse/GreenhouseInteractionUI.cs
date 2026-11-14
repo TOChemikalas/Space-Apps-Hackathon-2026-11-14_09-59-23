@@ -34,6 +34,14 @@ public sealed class GreenhouseInteractionUI : MonoBehaviour
     Text harvestLabel, prompt;
     GameObject statusPanel;
 
+    public void Bind(MarsClock colonyClock, Rigidbody2D body, Canvas canvas)
+    {
+        clock = colonyClock;
+        player = body;
+        movement = body.GetComponent<AstronautController>();
+        hudCanvas = canvas;
+    }
+
     void Awake()
     {
         interactionFilter.SetLayerMask(obstacleMask);
@@ -56,7 +64,7 @@ public sealed class GreenhouseInteractionUI : MonoBehaviour
         hud.gameObject.SetActive(IsInside);
     }
 
-    public bool IsPlayer(Collider2D other) => other.attachedRigidbody == player;
+    public bool IsPlayer(Collider2D other) => player && other.attachedRigidbody == player;
     public int HarvestCount(string cropId) => harvest.TryGetValue(cropId, out int count) ? count : 0;
     public void AddCandidate(GrowingBed bed) => candidates.Add(bed);
     public void DoorEntered(BuildingPortal door) => nearbyDoor = door;

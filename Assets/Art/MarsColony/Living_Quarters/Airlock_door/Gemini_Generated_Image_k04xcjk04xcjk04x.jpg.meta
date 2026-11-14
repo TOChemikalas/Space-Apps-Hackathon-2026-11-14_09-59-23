@@ -62,7 +62,7 @@ TextureImporter:
       spriteID: dd92c90104b34d55ad4462db10d528b9
       internalID: 21300000
       vertices: []
-      indices:
+      indices: ''
       edges: []
       weights: []
     outline: []
@@ -71,6 +71,6 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Airlock_MostlyOpen: 21300000
-  userData:
-  assetBundleName:
-  assetBundleVariant:
+  userData: ''
+  assetBundleName: ''
+  assetBundleVariant: ''

@@ -19,6 +19,9 @@ public sealed class SceneSpawn : MonoBehaviour
 
     public string Id => spawnId;
 
+    public void BindCamera(Camera camera) => worldCamera = camera;
+    public void SetRestoreViewFrom(SceneSpawn interiorSpawn) => restoreViewFrom = interiorSpawn;
+
     public void PlacePlayer(Rigidbody2D player)
     {
         player.linearVelocity = Vector2.zero;

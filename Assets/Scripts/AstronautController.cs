@@ -15,6 +15,7 @@ public class AstronautController : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 facing = Vector2.down;
     private Transform visual;
+    public Transform Visual => visual;
     private Vector3 defaultVisualScale;
 
     private void Awake()

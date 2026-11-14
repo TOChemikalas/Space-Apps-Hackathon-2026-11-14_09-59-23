@@ -42,6 +42,7 @@ public sealed class GrowingBed : MonoBehaviour
     public GreenhouseInteractionUI Greenhouse { get; private set; }
     public GrowingBedMenu Menu { get; private set; }
 
+    MarsClock growthClock;
     LineRenderer outline;
     Material outlineMaterial;
     readonly PlantSlot[] slots = new PlantSlot[SlotCount];
@@ -100,18 +101,21 @@ public sealed class GrowingBed : MonoBehaviour
 
     void OnEnable()
     {
-        if (Greenhouse && Greenhouse.Clock) Greenhouse.Clock.Advanced += OnAdvanced;
+        if (growthClock || !Greenhouse || !Greenhouse.Clock) return;
+        growthClock = Greenhouse.Clock;
+        // The colony clock continues advancing plants while their room is inactive.
+        growthClock.Advanced += OnAdvanced;
     }
 
     void OnDisable()
     {
-        if (Greenhouse && Greenhouse.Clock) Greenhouse.Clock.Advanced -= OnAdvanced;
         if (Greenhouse) Greenhouse.RemoveCandidate(this);
         if (outline) outline.enabled = false;
     }
 
     void OnDestroy()
     {
+        if (growthClock) growthClock.Advanced -= OnAdvanced;
         if (outlineMaterial) Destroy(outlineMaterial);
     }
 
