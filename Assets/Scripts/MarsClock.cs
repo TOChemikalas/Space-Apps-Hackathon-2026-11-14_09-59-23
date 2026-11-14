@@ -19,8 +19,11 @@ public sealed class MarsClock : MonoBehaviour
     void Awake() => Seconds = startHour / 24 * SecondsPerSol;
     void Update()
     {
-        if (!paused && speed > 0) Advance(Time.unscaledDeltaTime * SecondsPerSol / realSecondsPerSol * speed);
+        if (!paused && speed > 0) Advance(ScaleTime(Time.unscaledDeltaTime));
     }
+
+    // Scales real seconds to Mars seconds so one full Mars day takes 5 real minutes at the default settings.
+    public double ScaleTime(double realSeconds) => realSeconds * SecondsPerSol / realSecondsPerSol * speed;
 
     public void Advance(double delta)
     {
