@@ -9,7 +9,7 @@ using static GreenhouseCanvas;
 // Uses the existing equipment input/modal pattern and Canvas. Owns presentation, never energy state.
 public sealed class ElectricalControls : MonoBehaviour
 {
-    enum Screen { Overview, Solar, Battery, Allocation }
+    enum Screen { Overview, Solar, Battery, Allocation, Communications }
     const float Width = 2752, Height = 1536;
     static readonly string[] SystemNames = { "Water", "Oxygen", "Irrigation", "Cooling", "Heating", "Suit Repair Station", "Comms" };
     [SerializeField] EnergyController energy;
@@ -17,6 +17,12 @@ public sealed class ElectricalControls : MonoBehaviour
     [SerializeField] Rigidbody2D player;
     [SerializeField] Canvas hudCanvas;
     [SerializeField] Sprite dayArtwork, nightArtwork, batteryArtwork, allocationArtwork;
+    [SerializeField] Sprite communicationsDayArtwork, communicationsNightArtwork;
+    [SerializeField] SatelliteAlignmentMenu satelliteMenu;
+    [SerializeField] DishAlignmentModel dish = new DishAlignmentModel();
+    public DishAlignmentModel Dish => dish;
+    public bool IsSatelliteAligned => dish.IsLocked;
+    public event Action SatelliteAligned;
     [SerializeField] LayerMask obstacleMask = 1 << 6;
     readonly HashSet<ElectricalInteractable> candidates = new HashSet<ElectricalInteractable>();
     readonly RaycastHit2D[] obstruction = new RaycastHit2D[1];
@@ -31,7 +37,10 @@ public sealed class ElectricalControls : MonoBehaviour
     InputAction interact;
     ElectricalInteractable focused, selected;
     Battery activeBattery;
-    RectTransform overlay, content, regular, allocationPage;
+    RectTransform overlay, content, regular, allocationPage, communicationsPage;
+    Image communicationsBackdrop;
+    Text communicationsSignal, communicationsLink;
+    Button communicationsNavigation;
     Image backdrop, chargeBar, generationBar;
     Text badge, context, generation, demand, solarPower, efficiency, irradiance;
     Text charge, capacity, remaining, batterySummary, unassigned;
@@ -42,6 +51,7 @@ public sealed class ElectricalControls : MonoBehaviour
 
     void Awake()
     {
+        dish.Normalize();
         interactionFilter.SetLayerMask(obstacleMask);
         interactionFilter.useTriggers = false;
     }
@@ -66,7 +76,11 @@ public sealed class ElectricalControls : MonoBehaviour
         var keyboard = Keyboard.current;
         if (isOpen)
         {
-            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame) Close();
+            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
+            {
+                if (satelliteMenu && satelliteMenu.IsOpen) satelliteMenu.Back();
+                else Close();
+            }
             return;
         }
         if (!movement.enabled) { Focus(null); return; }
@@ -119,6 +133,7 @@ public sealed class ElectricalControls : MonoBehaviour
     {
         if (!isOpen) return;
         isOpen = false;
+        if (satelliteMenu) satelliteMenu.Hide();
         overlay.gameObject.SetActive(false);
         selected = null;
         activeBattery = null;
@@ -162,6 +177,8 @@ public sealed class ElectricalControls : MonoBehaviour
         day = MarsSun.At(energy.clock.Seconds, season, latitude).elevation > 0;
         Sprite artwork = day ? dayArtwork : nightArtwork;
         if (backdrop && backdrop.sprite != artwork) backdrop.sprite = artwork;
+        if (communicationsBackdrop)
+            communicationsBackdrop.sprite = day ? communicationsDayArtwork : communicationsNightArtwork;
     }
 
     void Build()
@@ -182,6 +199,9 @@ public sealed class ElectricalControls : MonoBehaviour
         badge = Field(regular, "Live available power", new Rect(2278, 78, 425, 94), 43);
         context = Field(regular, "Equipment identity", new Rect(790, 168, 1150, 35), 26);
         BuildAllocation();
+        BuildCommunications();
+        communicationsNavigation = Action(regular, "Communications >", new Rect(1310, 73, 600, 77),
+            () => Show(Screen.Communications), Panel, 36);
         overlay.gameObject.SetActive(false);
     }
 
@@ -258,8 +278,10 @@ public sealed class ElectricalControls : MonoBehaviour
     {
         screen = value;
         bool allocating = value == Screen.Allocation;
-        regular.gameObject.SetActive(!allocating);
+        regular.gameObject.SetActive(!allocating && value != Screen.Communications);
         allocationPage.gameObject.SetActive(allocating);
+        communicationsPage.gameObject.SetActive(value == Screen.Communications);
+        communicationsNavigation.gameObject.SetActive(selected && !selected.OpensBattery);
         for (int i = 0; i < pages.Length; i++) pages[i].SetActive(!allocating && i == (int)value);
         Refresh();
     }
@@ -290,6 +312,7 @@ public sealed class ElectricalControls : MonoBehaviour
 
     void Refresh()
     {
+        if (screen == Screen.Communications) { RefreshCommunications(); return; }
         if (screen == Screen.Allocation) { RefreshAllocation(); return; }
         Set(badge, $"{Math.Max(0, energy.GenerationKW - energy.DemandKW):0.00} kW available");
         Set(context, screen == Screen.Battery ? (activeBattery ? activeBattery.name : "Battery bank / all units") : selected.name);
@@ -319,6 +342,37 @@ public sealed class ElectricalControls : MonoBehaviour
         Set(remaining, double.IsNaN(hours) ? "—" : $"{Math.Floor(hours):0}h {Math.Floor((hours % 1) * 60):00}m");
         Set(batterySummary, $"Stored energy: {stats.Stored:0.00} kWh / {stats.Capacity:0.0} kWh\nCharging: {stats.Charge:0.00} kW   |   Discharging: {stats.Discharge:0.00} kW");
         chargeBar.rectTransform.sizeDelta = new Vector2(570 * (float)Math.Clamp(fraction, 0, 1), 28);
+    }
+
+    void BuildCommunications()
+    {
+        communicationsPage = Create(content, "Communications", new Rect(0, 0, Width, Height));
+        communicationsBackdrop = Image(communicationsPage, "Supplied Communications artwork", new Rect(0, 0, Width, Height), Color.white);
+        communicationsSignal = Field(communicationsPage, "Actual signal strength", new Rect(2115, 80, 580, 90), 44);
+        communicationsLink = Field(communicationsPage, "Actual link state", new Rect(2480, 918, 225, 70), 42);
+        Set(Field(communicationsPage, "Comms power source unavailable", new Rect(2480, 1032, 225, 70), 44), "—");
+        Action(communicationsPage, "Align Satellite Dish", new Rect(2110, 1190, 600, 140), OpenAlignment, Green, 43);
+        Button(communicationsPage, "Back to electricity", new Rect(25, 1408, 310, 118), Color.clear, () => Show(Screen.Overview));
+        communicationsPage.gameObject.SetActive(false);
+    }
+
+    void OpenAlignment()
+    {
+        if (!satelliteMenu) return;
+        communicationsPage.gameObject.SetActive(false);
+        satelliteMenu.Open(hudCanvas, () => Show(Screen.Communications));
+    }
+
+    void RefreshCommunications()
+    {
+        Set(communicationsSignal, $"{dish.Signal * 100:0.0}% Signal strength");
+        Set(communicationsLink, dish.IsLocked ? "Locked" : "Offline");
+    }
+
+    public void NotifySatelliteAligned()
+    {
+        RefreshCommunications();
+        SatelliteAligned?.Invoke();
     }
 
     struct BatteryReadings
