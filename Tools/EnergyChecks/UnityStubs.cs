@@ -6,6 +6,7 @@ namespace UnityEngine
         public bool isActiveAndEnabled = true;
         public static implicit operator bool(MonoBehaviour value) => value != null;
     }
+    public class SerializeField : System.Attribute { }
     public class MinAttribute : System.Attribute { public MinAttribute(float value) {} }
     public class RangeAttribute : System.Attribute { public RangeAttribute(float min, float max) {} }
     public class DefaultExecutionOrder : System.Attribute { public DefaultExecutionOrder(int value) {} }

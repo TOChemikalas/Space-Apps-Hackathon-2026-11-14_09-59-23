@@ -17,3 +17,6 @@ Run `dotnet run --project Tools/EnergyChecks/EnergyChecks.csproj` with the .NET 
 27 assertions passed: night/horizon production, peak output and elevation scaling, surplus-only charging, fair charging/discharging, conversion losses, capacity and power caps, redistribution, full-unit curtailment, depleted-unit unmet demand, pause, seek, accelerated versus incremental integration, full-day energy conservation, and a depleted two-battery system with 100 kW load and zero generation.
 
 Unity Editor was not available in this environment. Unity compilation, Play mode, actual sprite/text rendering, and lighting/gameplay regression checks were not executed. No existing clock, Sun, lighting, movement, shader, material, or testing script was changed. Existing MarsSun assumptions (uniform seasons and fixed atmospheric transmission) remain in use.
+
+
+Electrical-controls update: the harness now also compiles PowerAllocation and includes Water-to-Oxygen transfer, budget conservation, zero-allocation and empty-pool checks. The current build succeeds, but current execution is blocked by Windows Application Control, so those new assertions have not run. See [electrical controls](../ElectricalControls.md) for current bindings and Play Mode verification steps.

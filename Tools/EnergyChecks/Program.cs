@@ -80,5 +80,6 @@ static class Checks
         Equal(dark.UnmetEnergyKWh, 62, "Depletion energy balance");
         Equal(dark.UnmetDemandKW, 100, "Depleted system reports unmet power");
         Console.WriteLine($"PASS: {passed} assertions against production calculation scripts.");
+        AllocationChecks.Run();
     }
 }

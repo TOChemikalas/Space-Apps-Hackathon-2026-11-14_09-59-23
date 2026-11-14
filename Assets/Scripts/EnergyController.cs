@@ -8,6 +8,8 @@ public sealed class EnergyController : MonoBehaviour
     public SolarArray[] arrays = Array.Empty<SolarArray>();
     public Battery[] batteries = Array.Empty<Battery>();
     public ElectricalConsumer[] consumers = Array.Empty<ElectricalConsumer>();
+    [SerializeField] PowerAllocation allocation = new PowerAllocation();
+    public PowerAllocation Allocation => allocation;
     public double GenerationKW { get; private set; }
     public double DemandKW { get; private set; }
     public double UnmetDemandKW { get; private set; }
@@ -20,6 +22,9 @@ public sealed class EnergyController : MonoBehaviour
     // At most five simulated seconds remain pending; seeks discard that remainder.
     const double StepSeconds = 5;
     double pending, cursor;
+
+    void Awake() => allocation.Normalize();
+    void OnValidate() => allocation.Normalize();
 
     void OnEnable()
     {

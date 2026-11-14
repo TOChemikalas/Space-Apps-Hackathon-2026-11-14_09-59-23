@@ -7,5 +7,6 @@
     <Compile Include="../../Assets/Scripts/Battery.cs" />
     <Compile Include="../../Assets/Scripts/ElectricalConsumer.cs" />
     <Compile Include="../../Assets/Scripts/EnergyController.cs" />
+    <Compile Include="../../Assets/Scripts/PowerAllocation.cs" />
   </ItemGroup>
 </Project>
