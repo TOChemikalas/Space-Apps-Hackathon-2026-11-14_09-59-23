@@ -27,6 +27,18 @@ public sealed class Battery : MonoBehaviour
             StoredKWh * Math.Clamp(dischargeEfficiency, .01, 1) / hours));
     }
 
+    internal double SpareDischargeKW(double hours) =>
+        Math.Min(AvailableKW(false, hours), Math.Max(0, maxDischargeKW + Math.Min(0, BusPowerKW)));
+
+    internal void DischargeAdditional(double power, double hours)
+    {
+        double delivered = Math.Min(power, SpareDischargeKW(hours));
+        double stored = StoredKWh;
+        StoredKWh = Math.Max(0, stored - delivered * hours / Math.Clamp(dischargeEfficiency, .01, 1));
+        BusPowerKW -= delivered;
+        ConversionLossKWh += stored - StoredKWh - delivered * hours;
+    }
+
     public void Transfer(double busKW, double hours)
     {
         bool charging = busKW >= 0;

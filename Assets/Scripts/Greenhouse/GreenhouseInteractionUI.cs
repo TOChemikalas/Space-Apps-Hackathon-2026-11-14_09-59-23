@@ -16,6 +16,7 @@ public sealed class GreenhouseInteractionUI : MonoBehaviour
     [SerializeField] CropDefinition[] crops;
     [SerializeField] LayerMask obstacleMask = 1 << 6;
     public MarsClock Clock => clock;
+    internal MissionSurvival Survival { get; private set; }
     public Canvas HudCanvas => hudCanvas;
     public Sprite CropMenuArtwork => cropMenuArtwork;
     public bool IsInside { get; private set; }
@@ -39,6 +40,7 @@ public sealed class GreenhouseInteractionUI : MonoBehaviour
         clock = colonyClock;
         player = body;
         movement = body.GetComponent<AstronautController>();
+        Survival = body.GetComponent<MissionSurvival>();
         hudCanvas = canvas;
     }
 
@@ -91,6 +93,7 @@ public sealed class GreenhouseInteractionUI : MonoBehaviour
     public void RecordHarvest(CropDefinition crop)
     {
         harvest[crop.Id] = HarvestCount(crop.Id) + crop.HarvestQuantity;
+        if (Survival) Survival.AddHarvest(crop.HarvestQuantity);
         harvestSummary = "Harvest:";
         foreach (var definition in crops)
             harvestSummary += $"  {definition.DisplayName} {HarvestCount(definition.Id)}";

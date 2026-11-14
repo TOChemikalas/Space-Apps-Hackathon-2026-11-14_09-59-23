@@ -10,6 +10,8 @@ public sealed class EnergyController : MonoBehaviour
     public ElectricalConsumer[] consumers = Array.Empty<ElectricalConsumer>();
     [SerializeField] PowerAllocation allocation = new PowerAllocation();
     public PowerAllocation Allocation => allocation;
+    public event Action BatteryBankDepleted;
+    public event Action<double> PowerStepCompleted;
     public double GenerationKW { get; private set; }
     public double DemandKW { get; private set; }
     public double UnmetDemandKW { get; private set; }
@@ -22,6 +24,19 @@ public sealed class EnergyController : MonoBehaviour
     // At most five simulated seconds remain pending; seeks discard that remainder.
     const double StepSeconds = 5;
     double pending, cursor;
+
+    public bool TryGetBatteryCharge(out float fraction)
+    {
+        double stored = 0, capacity = 0;
+        foreach (var battery in batteries)
+        {
+            if (!battery || battery.capacityKWh <= 0) continue;
+            stored += battery.StoredKWh;
+            capacity += battery.capacityKWh;
+        }
+        fraction = capacity > 0 ? Mathf.Clamp01((float)(stored / capacity)) : 0;
+        return capacity > 0;
+    }
 
     void Awake() => allocation.Normalize();
     void OnValidate() => allocation.Normalize();
@@ -62,11 +77,29 @@ public sealed class EnergyController : MonoBehaviour
             DemandEnergyKWh += DemandKW * hours;
             double residual = Distribute(GenerationKW - DemandKW, hours, batteries);
             UnmetDemandKW = Math.Max(0, -residual);
+            PowerStepCompleted?.Invoke(StepSeconds);
+            if (TryGetBatteryCharge(out float charge) && charge <= 0) BatteryBankDepleted?.Invoke();
             UnmetEnergyKWh += UnmetDemandKW * hours;
             CurtailedEnergyKWh += Math.Max(0, residual) * hours;
             pending -= StepSeconds;
             cursor += StepSeconds;
         }
+    }
+
+    internal double DrawBatteryEnergy(double requestedKWh, double hours)
+    {
+        if (requestedKWh <= 0 || hours <= 0 || UnmetDemandKW > 0) return 0;
+        double available = 0;
+        foreach (var battery in batteries)
+            if (battery && battery.isActiveAndEnabled) available += battery.SpareDischargeKW(hours);
+        if (available <= 0) return 0;
+
+        double delivered = Math.Min(requestedKWh, available * hours);
+        double share = delivered / (available * hours);
+        foreach (var battery in batteries)
+            if (battery && battery.isActiveAndEnabled)
+                battery.DischargeAdditional(battery.SpareDischargeKW(hours) * share, hours);
+        return delivered;
     }
 
     // Equal bus-power sharing, redistributing shares that exceed a unit's limits.

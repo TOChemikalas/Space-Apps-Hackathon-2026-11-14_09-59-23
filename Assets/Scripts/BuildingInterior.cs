@@ -10,6 +10,8 @@ public sealed class BuildingInterior : MonoBehaviour
     [SerializeField] GreenhouseInteractionUI greenhouse;
     [SerializeField] AirlockCycle airlock;
 
+    MissionSurvival survival;
+
     public SceneSpawn Arrival => arrival;
     public BuildingPortal Exit => exit;
     public AirlockCycle Airlock => airlock;
@@ -41,6 +43,8 @@ public sealed class BuildingInterior : MonoBehaviour
         if (!airlock) return;
         airlock.BindExterior(entrance, player, exteriorGate, exteriorGateRenderer);
         airlock.OutsideSettled += Close;
+        if (player.TryGetComponent(out survival))
+            airlock.HabitatSupplyChanged += survival.SetHabitatSupply;
     }
 
     internal void Open() => gameObject.SetActive(true);
@@ -58,7 +62,9 @@ public sealed class BuildingInterior : MonoBehaviour
 
     void OnDestroy()
     {
-        if (airlock) airlock.OutsideSettled -= Close;
+        if (!airlock) return;
+        airlock.OutsideSettled -= Close;
+        if (survival) airlock.HabitatSupplyChanged -= survival.SetHabitatSupply;
     }
 }
 

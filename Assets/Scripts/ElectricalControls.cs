@@ -40,17 +40,23 @@ public sealed class ElectricalControls : MonoBehaviour
     RectTransform overlay, content, regular, allocationPage, communicationsPage;
     Image communicationsBackdrop;
     Text communicationsSignal, communicationsLink;
+    Text roverStatus, chargerButtonLabel;
+    Button chargerButton;
     Image backdrop, chargeBar, generationBar;
     Text badge, context, generation, demand, solarPower, efficiency, irradiance;
     Text charge, capacity, remaining, batterySummary, unassigned;
     bool isOpen, movementWasEnabled, day;
     float nextRefresh;
     int selectedSystem;
+    MissionSurvival survival;
+    Button recyclerUpgrade;
+    Text recyclerLabel;
     Screen screen, equipmentScreen;
 
     void Awake()
     {
         dish.Normalize();
+        if (movement) survival = movement.GetComponent<MissionSurvival>();
         interactionFilter.SetLayerMask(obstacleMask);
         interactionFilter.useTriggers = false;
     }
@@ -252,6 +258,13 @@ public sealed class ElectricalControls : MonoBehaviour
         allocationPage = Create(content, "Power allocation", new Rect(0, 0, Width, Height));
         Picture(allocationPage, "Supplied allocation artwork", new Rect(0, 0, Width, Height), allocationArtwork);
         unassigned = Field(allocationPage, "Unassigned points, not kW", new Rect(2270, 78, 435, 94), 40);
+        if (survival)
+        {
+            recyclerUpgrade = Button(allocationPage, "Upgrade water recycler", new Rect(1490, 74, 700, 93), Panel,
+                () => { survival.UpgradeWaterRecycling(); RefreshAllocation(); });
+            recyclerLabel = Label(recyclerUpgrade.transform, "Recycling efficiency", new Rect(0, 0, 700, 93), "",
+                35, TextAnchor.MiddleCenter, FontStyle.Bold);
+        }
         Mask(allocationPage, "Replace baked allocation examples", new Rect(1688, 390, 940, 850));
         for (int i = 0; i < PowerAllocation.SystemCount; i++)
         {
@@ -300,6 +313,13 @@ public sealed class ElectricalControls : MonoBehaviour
     {
         var allocation = energy.Allocation;
         Set(unassigned, $"{allocation.Unassigned} points unassigned");
+        if (recyclerUpgrade)
+        {
+            recyclerUpgrade.gameObject.SetActive(selectedSystem == (int)ElectricalSystem.Water);
+            bool canUpgrade = survival.WaterRecycling < .95f;
+            Set(recyclerLabel, canUpgrade ? "Water recycler · 90% → 95%" : $"Water recycler · {survival.WaterRecycling:P0}");
+            recyclerUpgrade.interactable = canUpgrade;
+        }
         for (int i = 0; i < PowerAllocation.SystemCount; i++)
         {
             int points = allocation.Get((ElectricalSystem)i);
@@ -355,6 +375,15 @@ public sealed class ElectricalControls : MonoBehaviour
         communicationsLink = Field(communicationsPage, "Actual link state", new Rect(2480, 918, 225, 70), 42);
         Set(Field(communicationsPage, "Comms power source unavailable", new Rect(2480, 1032, 225, 70), 44), "—");
         Action(communicationsPage, "Align Satellite Dish", new Rect(2110, 1190, 600, 140), OpenAlignment, Green, 43);
+        roverStatus = Field(communicationsPage, "Rover charging status", new Rect(680, 1140, 1220, 75), 38);
+        roverStatus.alignment = TextAnchor.MiddleCenter;
+        chargerButton = Button(communicationsPage, "Rover charger", new Rect(884, 1224, 820, 105), Panel, () =>
+        {
+            if (RoverVehicle.Instance) RoverVehicle.Instance.ToggleCharger();
+            RefreshCommunications();
+        });
+        chargerButtonLabel = Label(chargerButton.transform, "Charger action", new Rect(0, 0, 820, 105), "",
+            39, TextAnchor.MiddleCenter, FontStyle.Bold);
         Button(communicationsPage, "Back to electricity", new Rect(25, 1408, 310, 118), Color.clear, ShowEquipment);
         communicationsPage.gameObject.SetActive(false);
     }
@@ -372,6 +401,10 @@ public sealed class ElectricalControls : MonoBehaviour
         Set(communicationsLink, dish.IsLocked ? "Locked" : "Offline");
         communicationsSignal.color = Color.Lerp(Orange, Green, (float)dish.Signal);
         communicationsLink.color = dish.IsLocked ? Green : Orange;
+        var rover = RoverVehicle.Instance;
+        Set(roverStatus, rover ? $"Rover {rover.Charge:P0} · {rover.ChargerStatus}" : "Rover unavailable");
+        Set(chargerButtonLabel, rover && rover.IsConnected ? "Disconnect rover charger" : "Start rover charging");
+        chargerButton.interactable = rover && (rover.IsDocked || rover.IsConnected);
     }
 
     public void NotifySatelliteAligned()

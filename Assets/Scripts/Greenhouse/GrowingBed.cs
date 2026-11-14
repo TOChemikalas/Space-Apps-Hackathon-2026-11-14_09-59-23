@@ -36,6 +36,8 @@ public sealed class GrowingBed : MonoBehaviour
     [SerializeField] SpriteRenderer cropRenderer;
     [SerializeField] Vector2 cropVisualSize = new Vector2(5.4f, 1.9f);
     [SerializeField, Min(0)] float growthMultiplier = 1;
+    [SerializeField] CropDefinition starterCrop;
+    [SerializeField, Min(0)] int starterHarvestSol;
     public float EnvironmentMultiplier { get; set; } = 1;
     public string Id => bedId;
     public BoxCollider2D Boundary => solidBoundary;
@@ -105,6 +107,18 @@ public sealed class GrowingBed : MonoBehaviour
         growthClock = Greenhouse.Clock;
         // The colony clock continues advancing plants while their room is inactive.
         growthClock.Advanced += OnAdvanced;
+        if (starterCrop && starterHarvestSol > 0 && Greenhouse.Survival)
+        {
+            double remaining = Greenhouse.Survival.TimeUntilStarterHarvest(starterHarvestSol);
+            double multiplier = growthMultiplier * EnvironmentMultiplier;
+            double elapsed = Math.Max(0, starterCrop.DurationSeconds - remaining * multiplier);
+            for (int i = 0; i < SlotCount; i++)
+            {
+                if (!slots[i].Plant(starterCrop)) continue;
+                slots[i].Progress.Advance(0, elapsed, 1);
+                RefreshSprite(i);
+            }
+        }
     }
 
     void OnDisable()

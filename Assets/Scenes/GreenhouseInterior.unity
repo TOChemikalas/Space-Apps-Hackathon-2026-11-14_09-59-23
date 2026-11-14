@@ -508,6 +508,8 @@ MonoBehaviour:
   cropRenderer: {fileID: 2100000112}
   cropVisualSize: {x: 5.8, y: 2.1}
   growthMultiplier: 1
+  starterCrop: {fileID: 11400000, guid: bb3d8d727aef4334b4fb544708c53574, type: 2}
+  starterHarvestSol: 2
 --- !u!114 &2100000105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -757,6 +759,8 @@ MonoBehaviour:
   cropRenderer: {fileID: 2100000212}
   cropVisualSize: {x: 5.8, y: 2.1}
   growthMultiplier: 1
+  starterCrop: {fileID: 11400000, guid: bb3d8d727aef4334b4fb544708c53574, type: 2}
+  starterHarvestSol: 4
 --- !u!114 &2100000205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1006,6 +1010,8 @@ MonoBehaviour:
   cropRenderer: {fileID: 2100000312}
   cropVisualSize: {x: 5.8, y: 2.1}
   growthMultiplier: 1
+  starterCrop: {fileID: 11400000, guid: bb3d8d727aef4334b4fb544708c53574, type: 2}
+  starterHarvestSol: 6
 --- !u!114 &2100000305
 MonoBehaviour:
   m_ObjectHideFlags: 0

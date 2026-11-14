@@ -18,6 +18,7 @@ public sealed class AirlockCycle : MonoBehaviour
     public float ActivePressureDuration { get; private set; }
     public bool IsConfigured => player && exteriorPortal && interiorPortal && outerDoor && innerDoor
         && outerDoor.IsConfigured && innerDoor.IsConfigured;
+    public event System.Action<bool> HabitatSupplyChanged;
     Collider2D waitingOutside, waitingToExit, approachingInner;
     Coroutine sequence;
     bool running;
@@ -155,6 +156,7 @@ public sealed class AirlockCycle : MonoBehaviour
         State = Phase.ClosingInner;
         yield return innerDoor.Animate(false);
         State = Phase.Depressurizing;
+        HabitatSupplyChanged?.Invoke(false);
         yield return PressureCycle(depressurizationSeconds);
         State = Phase.OpeningOuter;
         yield return outerDoor.Animate(true);
@@ -164,7 +166,7 @@ public sealed class AirlockCycle : MonoBehaviour
     void SafeToProceed(Phase phase)
     {
         State = phase;
-        // Single future safe-to-proceed audio hook; pressure and door animation have both finished.
+        if (phase == Phase.EnterHabitat) HabitatSupplyChanged?.Invoke(true);
     }
 
     IEnumerator PressureCycle(float seconds)

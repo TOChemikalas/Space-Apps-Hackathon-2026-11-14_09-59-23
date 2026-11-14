@@ -8,6 +8,8 @@ public class MarsSceneFade : MonoBehaviour
     [SerializeField] private float fadeSeconds = 1.6f;
     [SerializeField] private bool pauseGameDuringFade = true;
 
+    [SerializeField] private MarsClock clock;
+    private bool clockWasEnabled;
     private static bool hasFadedOnce;
     private bool paused;
 
@@ -38,6 +40,11 @@ public class MarsSceneFade : MonoBehaviour
 
         if (pauseGameDuringFade)
         {
+            if (clock)
+            {
+                clockWasEnabled = clock.enabled;
+                clock.enabled = false;
+            }
             Time.timeScale = 0f;
             paused = true;
         }
@@ -75,6 +82,7 @@ public class MarsSceneFade : MonoBehaviour
         if (!paused) return;
 
         Time.timeScale = 1f;
+        if (clock) clock.enabled = clockWasEnabled;
         paused = false;
     }
 }

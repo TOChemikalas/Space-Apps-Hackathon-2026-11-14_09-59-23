@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 268809153}
   - component: {fileID: 268809156}
   - component: {fileID: 268809157}
+  - component: {fileID: 268809158}
   m_Layer: 0
   m_Name: Astronaut
   m_TagString: Untagged
@@ -836,6 +837,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MarsWatch
   clock: {fileID: 769965454}
   canvas: {fileID: 491920040}
+  energy: {fileID: 2000000006}
+  worldCamera: {fileID: 519420031}
+  astronaut: {fileID: 268809155}
+  oxygenIcon: {fileID: 2712357080141673454, guid: 72894ab770fba8042a1c4fce0d626ec3, type: 3}
+  waterIcon: {fileID: 8509550459451208454, guid: 4fb21ec1ea048f1488f6635e4b73afed, type: 3}
+  foodIcon: {fileID: -1045181238759104467, guid: 52dff058dfede4b42b99874a08b307f5, type: 3}
+  powerIcon: {fileID: -2032187774689554106, guid: 26601246be71a554f8dfe8eab3f9c272, type: 3}
+  survival: {fileID: 268809158}
 --- !u!1 &927011903
 GameObject:
   m_ObjectHideFlags: 0
@@ -1519,6 +1528,7 @@ MonoBehaviour:
   overlay: {fileID: 1701419980}
   fadeSeconds: 1.6
   pauseGameDuringFade: 1
+  clock: {fileID: 769965454}
 --- !u!225 &1701419980
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2051,6 +2061,10 @@ MonoBehaviour:
   driveSpeed: 7
   interactDistance: 2
   dismountOffset: {x: 1.7, y: 0}
+  energy: {fileID: 2000000006}
+  chargingStation: {fileID: 2600000001}
+  dockRadius: 1.7
+  batteryCapacityKWh: 20
 --- !u!50 &1903254753
 Rigidbody2D:
   serializedVersion: 5
@@ -2374,7 +2388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b801da6d2347b68335e10ed3feef95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  area: 100
+  area: 150
   irradiance: 590
   cellEfficiency: 0.32
   transmission: 0.7
@@ -2405,8 +2419,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7bbed1c54df24f58bde5ec2716e8a92f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   clock: {fileID: 769965454}
   lighting: {fileID: 769965455}
   arrays:
@@ -2419,134 +2433,6 @@ MonoBehaviour:
   allocation:
     budget: 40
     points: 06000000070000000300000004000000050000000300000006000000
---- !u!1 &2000000010
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2000000011}
-  - component: {fileID: 2000000012}
-  - component: {fileID: 2000000013}
-  m_Layer: 0
-  m_Name: Battery 1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2000000011
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2000000010}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: -2, z: -1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2400000401}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2000000012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2000000010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92529087d905466dad76a900a1a50929, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  capacityKWh: 40
-  maxChargeKW: 20
-  maxDischargeKW: 40
-  chargeEfficiency: 0.95
-  dischargeEfficiency: 0.95
-  initialCharge: 0.5
---- !u!114 &2000000013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2000000010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a6a796b7c084c3097872e60f0befc95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &2000000020
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2000000021}
-  - component: {fileID: 2000000022}
-  - component: {fileID: 2000000023}
-  m_Layer: 0
-  m_Name: Battery 2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2000000021
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2000000020}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: -2, z: -1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2400000501}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2000000022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2000000020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92529087d905466dad76a900a1a50929, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  capacityKWh: 40
-  maxChargeKW: 20
-  maxDischargeKW: 40
-  chargeEfficiency: 0.95
-  dischargeEfficiency: 0.95
-  initialCharge: 0.5
---- !u!114 &2000000023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2000000020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a6a796b7c084c3097872e60f0befc95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2033778299
 GameObject:
   m_ObjectHideFlags: 0
@@ -2918,6 +2804,7 @@ MonoBehaviour:
   colonyCamera: {fileID: 519420031}
   exteriorGate: {fileID: 0}
   exteriorGateRenderer: {fileID: 0}
+  electricalControls: {fileID: 0}
 --- !u!1 &2100003000
 GameObject:
   m_ObjectHideFlags: 0
@@ -4203,6 +4090,9 @@ SpriteRenderer:
 --- !u!1 &2400000000
 GameObject:
   m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2400000001}
@@ -4211,25 +4101,36 @@ GameObject:
   m_Layer: 0
   m_Name: Electrical controls
   m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2400000001
 Transform:
   m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2400000000}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2400000002
 MonoBehaviour:
   m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2400000000}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9413068cf88c4636ad7f473c74ea4691, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElectricalControls
   energy: {fileID: 2000000006}
   movement: {fileID: 268809156}
@@ -4239,9 +4140,6 @@ MonoBehaviour:
   nightArtwork: {fileID: 21300000, guid: 20d48026b05442fab374828aaf25fcaa, type: 3}
   batteryArtwork: {fileID: 21300000, guid: 98cc71dd96af435bb4b3789fc8f5c7ad, type: 3}
   allocationArtwork: {fileID: 21300000, guid: c11ee74782d547aaa5c0854113f99c25, type: 3}
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 64
   communicationsDayArtwork: {fileID: 21300000, guid: 42c1cd50769a41c29d1ff5f794fd1f43, type: 3}
   communicationsNightArtwork: {fileID: 21300000, guid: 150a42f4848c43c7abcd5f7e648da6db, type: 3}
   satelliteMenu: {fileID: 2500000002}
@@ -4253,186 +4151,166 @@ MonoBehaviour:
     toleranceDegrees: 2
     successSignalPercent: 95
     holdSeconds: 1.5
---- !u!1 &2400000400
-GameObject:
-  m_ObjectHideFlags: 0
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2400000401}
-  - component: {fileID: 2400000402}
-  - component: {fileID: 2400000403}
-  m_Layer: 0
-  m_Name: Battery 1 controls
-  m_TagString: Untagged
-  m_IsActive: 1
---- !u!4 &2400000401
-Transform:
-  m_ObjectHideFlags: 0
-  m_GameObject: {fileID: 2400000400}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2000000011}
---- !u!61 &2400000402
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2400000400}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
+  obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 3.43, y: 4}
-  m_EdgeRadius: 0
---- !u!114 &2400000403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_GameObject: {fileID: 2400000400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d252b7cc34d43a599e545eef0b28d82, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::ElectricalInteractable
-  controls: {fileID: 2400000002}
-  solidBoundary: {fileID: 0}
-  outlineSize: {x: 1.43, y: 2}
-  interactionRange: {fileID: 2400000402}
-  battery: {fileID: 2000000012}
-  opensBattery: 1
---- !u!1 &2400000500
-GameObject:
-  m_ObjectHideFlags: 0
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2400000501}
-  - component: {fileID: 2400000502}
-  - component: {fileID: 2400000503}
-  m_Layer: 0
-  m_Name: Battery 2 controls
-  m_TagString: Untagged
-  m_IsActive: 1
---- !u!4 &2400000501
-Transform:
-  m_ObjectHideFlags: 0
-  m_GameObject: {fileID: 2400000500}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2000000021}
---- !u!61 &2400000502
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2400000500}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 3.43, y: 4}
-  m_EdgeRadius: 0
---- !u!114 &2400000503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_GameObject: {fileID: 2400000500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d252b7cc34d43a599e545eef0b28d82, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::ElectricalInteractable
-  controls: {fileID: 2400000002}
-  solidBoundary: {fileID: 0}
-  outlineSize: {x: 1.43, y: 2}
-  interactionRange: {fileID: 2400000502}
-  battery: {fileID: 2000000022}
-  opensBattery: 1
+    m_Bits: 64
 --- !u!114 &2500000002
 MonoBehaviour:
   m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2400000000}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6af80467deb146058e066657e6043a1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SatelliteAlignmentMenu
   owner: {fileID: 2400000002}
   artwork: {fileID: 21300000, guid: 9a333dd1452f4919b27e5d06b8b2c965, type: 3}
   azimuthSensitivity: 0.1
   elevationSensitivity: 0.1
   monitorHalfSpan: {x: 45, y: 22.5}
+--- !u!1 &2000000010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2000000011}
+  - component: {fileID: 2000000012}
+  m_Layer: 0
+  m_Name: Battery 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2000000011
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000000010}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2, y: -2, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2000000012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000000010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92529087d905466dad76a900a1a50929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capacityKWh: 40
+  maxChargeKW: 20
+  maxDischargeKW: 40
+  chargeEfficiency: 0.95
+  dischargeEfficiency: 0.95
+  initialCharge: 1
+--- !u!1 &2000000020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2000000021}
+  - component: {fileID: 2000000022}
+  m_Layer: 0
+  m_Name: Battery 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2000000021
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000000020}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2, y: -2, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2000000022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000000020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92529087d905466dad76a900a1a50929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capacityKWh: 40
+  maxChargeKW: 20
+  maxDischargeKW: 40
+  chargeEfficiency: 0.95
+  dischargeEfficiency: 0.95
+  initialCharge: 1
+--- !u!114 &268809158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268809151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5cfb31b347c4d42bb3bdb3ffe73e59d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MissionSurvival
+  clock: {fileID: 769965454}
+  canvas: {fileID: 491920040}
+  energy: {fileID: 2000000006}
+  waterRecycling: 0.9
+  initialHabitatWaterLiters: 5.14
+  initialHabitatFoodKg: 3.185
+  harvestKgPerUnit: 0.10616667
+  kneelStandingSprite: {fileID: 8118064155412239792, guid: a93fb05787db81f4fadbc4f7b33cc79d, type: 3}
+--- !u!1 &2600000000
+GameObject:
+  m_ObjectHideFlags: 0
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2600000001}
+  m_Layer: 0
+  m_Name: Rover charging bay
+  m_TagString: Untagged
+  m_IsActive: 1
+--- !u!4 &2600000001
+Transform:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 2600000000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.2, y: -5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -4442,8 +4320,9 @@ SceneRoots:
   - {fileID: 1792182767}
   - {fileID: 1789147778}
   - {fileID: 2000000001}
-  - {fileID: 2000000011}
-  - {fileID: 2000000021}
   - {fileID: 1951221927}
   - {fileID: 2033778300}
   - {fileID: 2400000001}
+  - {fileID: 2000000011}
+  - {fileID: 2000000021}
+  - {fileID: 2600000001}
