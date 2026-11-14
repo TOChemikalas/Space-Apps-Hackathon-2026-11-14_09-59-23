@@ -350,7 +350,7 @@ public sealed class ElectricalControls : MonoBehaviour
             area += weight;
             cellEfficiency += weight * array.cellEfficiency;
             irradianceTotal += weight * array.irradiance;
-            peak += array.PowerAtElevation(90);
+            peak += array.ClearSkyPowerAtElevation(90);
         }
         Set(efficiency, area > 0 ? $"{100 * cellEfficiency / area:0.0}%" : "—");
         Set(irradiance, area > 0 ? $"{irradianceTotal / area:0} W/m²" : "—");

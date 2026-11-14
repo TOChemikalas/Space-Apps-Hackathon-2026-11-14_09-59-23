@@ -113,6 +113,7 @@ public sealed class MarsWatch : MonoBehaviour
 
         mapCamera = new GameObject("Minimap Camera").AddComponent<Camera>();
         mapCamera.CopyFrom(worldCamera);
+        mapCamera.cullingMask &= ~LayerMask.GetMask(MarsDustStormVisuals.EffectsLayer);
         mapCamera.allowHDR = false;
         mapCamera.allowMSAA = false;
         mapCamera.orthographic = true;
