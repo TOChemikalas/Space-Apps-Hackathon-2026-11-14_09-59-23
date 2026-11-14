@@ -22,6 +22,7 @@ public sealed class BuildingPortal : MonoBehaviour
     [SerializeField] Camera colonyCamera;
     [SerializeField] Collider2D exteriorGate;
     [SerializeField] SpriteRenderer exteriorGateRenderer;
+    [SerializeField] ElectricalControls electricalControls;
     BuildingInterior loadedInterior;
     Collider2D nearbyCollider;
     bool loadingInterior;
@@ -168,7 +169,8 @@ public sealed class BuildingPortal : MonoBehaviour
         {
             if (!root.TryGetComponent(out BuildingInterior interior) || !interior.Arrival || interior.Arrival.Id != arrivalSpawnId) continue;
             loadedInterior = interior;
-            interior.Bind(this, exteriorReturn, colonyClock, colonyCamera, promptCanvas, exteriorGate, exteriorGateRenderer);
+            interior.Bind(this, exteriorReturn, colonyClock, colonyCamera, promptCanvas, exteriorGate,
+                exteriorGateRenderer, electricalControls);
             return;
         }
 

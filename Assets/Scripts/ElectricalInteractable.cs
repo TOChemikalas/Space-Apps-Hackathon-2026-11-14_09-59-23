@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 // Local proximity/outline only. The shared electrical UI owns focus and modal input.
 public sealed class ElectricalInteractable : MonoBehaviour
@@ -9,11 +9,19 @@ public sealed class ElectricalInteractable : MonoBehaviour
     [SerializeField] BoxCollider2D interactionRange;
     [SerializeField] Battery battery;
     [SerializeField] bool opensBattery;
+    [SerializeField, Min(0)] int colonyBatteryIndex;
     public Battery Battery => battery;
     public bool OpensBattery => opensBattery;
     public Collider2D SolidBoundary => solidBoundary;
     LineRenderer outline;
     Material outlineMaterial;
+
+    public void Bind(ElectricalControls colonyControls)
+    {
+        controls = colonyControls;
+        if (opensBattery && !battery)
+            battery = controls.GetColonyBattery(colonyBatteryIndex);
+    }
 
     void Awake()
     {

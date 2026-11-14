@@ -65,6 +65,8 @@ public class RoverVehicle : MonoBehaviour
 
     private void SceneChanged(Scene scene, LoadSceneMode mode)
     {
+        // Additive interiors share the exterior scene, including its parked rover.
+        if (mode == LoadSceneMode.Additive) return;
         bool outside = scene.name == exteriorSceneName;
         if (!outside)
         {

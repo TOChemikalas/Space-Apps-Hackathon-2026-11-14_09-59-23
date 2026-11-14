@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -40,14 +40,13 @@ public sealed class ElectricalControls : MonoBehaviour
     RectTransform overlay, content, regular, allocationPage, communicationsPage;
     Image communicationsBackdrop;
     Text communicationsSignal, communicationsLink;
-    Button communicationsNavigation;
     Image backdrop, chargeBar, generationBar;
     Text badge, context, generation, demand, solarPower, efficiency, irradiance;
     Text charge, capacity, remaining, batterySummary, unassigned;
     bool isOpen, movementWasEnabled, day;
     float nextRefresh;
     int selectedSystem;
-    Screen screen;
+    Screen screen, equipmentScreen;
 
     void Awake()
     {
@@ -62,7 +61,10 @@ public sealed class ElectricalControls : MonoBehaviour
     }
 
     void Start() => interact = InputSystem.actions?.FindAction("Player/Interact");
-    public bool IsPlayer(Collider2D other) => other.attachedRigidbody == player;
+    public bool IsPlayer(Collider2D other) => player && other.attachedRigidbody == player;
+
+    internal Battery GetColonyBattery(int index) =>
+        energy && index >= 0 && index < energy.batteries.Length ? energy.batteries[index] : null;
     public void AddCandidate(ElectricalInteractable item) => candidates.Add(item);
     public void RemoveCandidate(ElectricalInteractable item)
     {
@@ -83,7 +85,7 @@ public sealed class ElectricalControls : MonoBehaviour
             }
             return;
         }
-        if (!movement.enabled) { Focus(null); return; }
+        if (!movement || !player || !movement.isActiveAndEnabled) { Focus(null); return; }
         ElectricalInteractable closest = null;
         float distance = float.PositiveInfinity;
         foreach (var item in candidates)
@@ -98,8 +100,7 @@ public sealed class ElectricalControls : MonoBehaviour
             distance = candidateDistance;
         }
         Focus(closest);
-        bool pressed = interact?.WasPressedThisFrame() == true || (keyboard != null && keyboard.eKey.wasPressedThisFrame);
-        if (focused && pressed) Open(focused);
+        if (focused && interact?.WasPressedThisFrame() == true) Open(focused);
     }
 
     void Focus(ElectricalInteractable item)
@@ -112,7 +113,7 @@ public sealed class ElectricalControls : MonoBehaviour
 
     void Open(ElectricalInteractable item)
     {
-        if (!energy || !hudCanvas) return;
+        if (!energy || !energy.clock || !hudCanvas || (item.OpensBattery && !item.Battery)) return;
         if (!overlay) Build();
         selected = item;
         activeBattery = item.Battery;
@@ -134,10 +135,10 @@ public sealed class ElectricalControls : MonoBehaviour
         if (!isOpen) return;
         isOpen = false;
         if (satelliteMenu) satelliteMenu.Hide();
-        overlay.gameObject.SetActive(false);
+        if (overlay) overlay.gameObject.SetActive(false);
         selected = null;
         activeBattery = null;
-        movement.enabled = movementWasEnabled;
+        if (movement) movement.enabled = movementWasEnabled;
         EventSystem.current?.SetSelectedGameObject(null);
     }
 
@@ -200,8 +201,8 @@ public sealed class ElectricalControls : MonoBehaviour
         context = Field(regular, "Equipment identity", new Rect(790, 168, 1150, 35), 26);
         BuildAllocation();
         BuildCommunications();
-        communicationsNavigation = Action(regular, "Communications >", new Rect(1310, 73, 600, 77),
-            () => Show(Screen.Communications), Panel, 36);
+        Action(regular, "Allocate power", new Rect(1280, 73, 470, 76), () => Show(Screen.Allocation), size: 40);
+        Action(regular, "Communications", new Rect(1770, 73, 478, 76), () => Show(Screen.Communications), size: 40);
         overlay.gameObject.SetActive(false);
     }
 
@@ -220,7 +221,7 @@ public sealed class ElectricalControls : MonoBehaviour
         var page = Page(Screen.Overview, nightArtwork);
         generation = Field(page, "Generation kW", new Rect(2460, 918, 245, 70), 47);
         demand = Field(page, "Demand kW", new Rect(2460, 1032, 245, 70), 47);
-        Button(page, "Open power allocation", new Rect(2110, 1190, 600, 140), Color.clear, () => Show(Screen.Allocation));
+        Action(page, "Allocate power", new Rect(2110, 1190, 600, 140), () => Show(Screen.Allocation));
     }
 
     void BuildSolar()
@@ -266,22 +267,24 @@ public sealed class ElectricalControls : MonoBehaviour
             removeButtons[i] = Action(row.transform, "−", new Rect(725, 10, 78, 84), () => Change(index, false), Orange, 56);
             addButtons[i] = Action(row.transform, "+", new Rect(815, 10, 78, 84), () => Change(index, true), Orange, 56);
         }
-        Action(allocationPage, "Back to electricity", new Rect(2115, 1240, 493, 123), () => Show(Screen.Overview));
-        Button(allocationPage, "Close allocation", new Rect(2530, 263, 92, 94), Color.clear, () => Show(Screen.Overview));
-        Button(allocationPage, "Allocation back", new Rect(25, 1408, 310, 118), Color.clear, () => Show(Screen.Overview));
+        Action(allocationPage, "Back to electricity", new Rect(2115, 1240, 493, 123), ShowEquipment);
+        Button(allocationPage, "Close allocation", new Rect(2530, 263, 92, 94), Color.clear, ShowEquipment);
+        Button(allocationPage, "Allocation back", new Rect(25, 1408, 310, 118), Color.clear, ShowEquipment);
         var note = Field(allocationPage, "Allocation applies immediately", new Rect(1720, 1370, 900, 35), 24);
         Set(note, "Changes apply immediately. Points are separate from kW.");
         allocationPage.gameObject.SetActive(false);
     }
 
+    void ShowEquipment() => Show(equipmentScreen);
+
     void Show(Screen value)
     {
         screen = value;
+        if (value <= Screen.Battery) equipmentScreen = value;
         bool allocating = value == Screen.Allocation;
         regular.gameObject.SetActive(!allocating && value != Screen.Communications);
         allocationPage.gameObject.SetActive(allocating);
         communicationsPage.gameObject.SetActive(value == Screen.Communications);
-        communicationsNavigation.gameObject.SetActive(selected && !selected.OpensBattery);
         for (int i = 0; i < pages.Length; i++) pages[i].SetActive(!allocating && i == (int)value);
         Refresh();
     }
@@ -352,7 +355,7 @@ public sealed class ElectricalControls : MonoBehaviour
         communicationsLink = Field(communicationsPage, "Actual link state", new Rect(2480, 918, 225, 70), 42);
         Set(Field(communicationsPage, "Comms power source unavailable", new Rect(2480, 1032, 225, 70), 44), "—");
         Action(communicationsPage, "Align Satellite Dish", new Rect(2110, 1190, 600, 140), OpenAlignment, Green, 43);
-        Button(communicationsPage, "Back to electricity", new Rect(25, 1408, 310, 118), Color.clear, () => Show(Screen.Overview));
+        Button(communicationsPage, "Back to electricity", new Rect(25, 1408, 310, 118), Color.clear, ShowEquipment);
         communicationsPage.gameObject.SetActive(false);
     }
 

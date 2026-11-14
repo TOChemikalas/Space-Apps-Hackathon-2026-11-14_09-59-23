@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 // Two orthogonal 2D views show real azimuth and elevation without rotating baked habitat artwork.
+[RequireComponent(typeof(CanvasRenderer))]
 public sealed class SatelliteDiagram : MaskableGraphic
 {
     public DishAlignmentModel Model;

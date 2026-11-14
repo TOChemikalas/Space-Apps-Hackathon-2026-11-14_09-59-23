@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 // The hit rectangle stays fixed; only drawn spokes rotate, avoiding transform feedback during dragging.
+[RequireComponent(typeof(CanvasRenderer))]
 public sealed class SatelliteSteeringWheel : MaskableGraphic, IPointerDownHandler, IInitializePotentialDragHandler, IDragHandler,
     IPointerUpHandler, ICanvasRaycastFilter
 {

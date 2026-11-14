@@ -21,7 +21,7 @@ public sealed class BuildingInterior : MonoBehaviour
     }
 
     internal void Bind(BuildingPortal entrance, SceneSpawn outside, MarsClock clock, Camera camera,
-        Canvas hud, Collider2D exteriorGate, SpriteRenderer exteriorGateRenderer)
+        Canvas hud, Collider2D exteriorGate, SpriteRenderer exteriorGateRenderer, ElectricalControls electricalControls)
     {
         gameObject.SetActive(false);
         transform.position = runtimePosition;
@@ -35,6 +35,9 @@ public sealed class BuildingInterior : MonoBehaviour
         foreach (var bed in GetComponentsInChildren<CrewBed>(true)) bed.Bind(clock, astronaut, hud);
         foreach (var door in GetComponentsInChildren<RoomDoor>(true)) door.BindPlayer(player);
         foreach (var effect in GetComponentsInChildren<AirlockDecontamination>(true)) effect.BindCanvas(hud);
+        if (electricalControls)
+            foreach (var terminal in GetComponentsInChildren<ElectricalInteractable>(true))
+                terminal.Bind(electricalControls);
         if (!airlock) return;
         airlock.BindExterior(entrance, player, exteriorGate, exteriorGateRenderer);
         airlock.OutsideSettled += Close;
