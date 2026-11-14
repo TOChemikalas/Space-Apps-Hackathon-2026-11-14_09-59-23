@@ -87,4 +87,16 @@ public sealed class DishAlignmentModel
     }
 
     public void CancelHold() { if (!IsLocked) heldSeconds = 0; }
+
+    public void Restore(double savedAzimuth, double savedElevation, double savedTargetAzimuth, double savedTargetElevation, bool locked)
+    {
+        azimuth = savedAzimuth;
+        elevation = savedElevation;
+        targetAzimuth = savedTargetAzimuth;
+        targetElevation = savedTargetElevation;
+        Normalize();
+        IsLocked = locked && CanAcquire;
+        heldSeconds = 0;
+        Changed?.Invoke();
+    }
 }

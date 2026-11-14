@@ -9,7 +9,7 @@ using static GreenhouseCanvas;
 // Uses the existing equipment input/modal pattern and Canvas. Owns presentation, never energy state.
 public sealed class ElectricalControls : MonoBehaviour
 {
-    enum Screen { Overview, Solar, Battery, Allocation, Communications }
+    enum Screen { Overview, Solar, Battery, Allocation, Communications, Selection, Transmission, Inbox }
     const float Width = 2752, Height = 1536;
     static readonly string[] SystemNames = { "Water", "Oxygen", "Irrigation", "Cooling", "Heating", "Suit Repair Station", "Comms" };
     [SerializeField] EnergyController energy;
@@ -19,6 +19,11 @@ public sealed class ElectricalControls : MonoBehaviour
     [SerializeField] Sprite dayArtwork, nightArtwork, batteryArtwork, allocationArtwork;
     [SerializeField] Sprite communicationsDayArtwork, communicationsNightArtwork;
     [SerializeField] SatelliteAlignmentMenu satelliteMenu;
+    [SerializeField] CommunicationsSession communications;
+    [SerializeField] Sprite selectionArtwork, transmissionArtwork, incomingOnlineArtwork, incomingOfflineArtwork;
+    CommunicationsTerminalUI terminal;
+    RectTransform selectionPage;
+    Text selectionGeneration, selectionDemand, selectionSignal, selectionStatus, selectionAvailable;
     [SerializeField] DishAlignmentModel dish = new DishAlignmentModel();
     public DishAlignmentModel Dish => dish;
     public bool IsSatelliteAligned => dish.IsLocked;
@@ -57,6 +62,7 @@ public sealed class ElectricalControls : MonoBehaviour
     {
         dish.Normalize();
         if (movement) survival = movement.GetComponent<MissionSurvival>();
+        if (communications && energy && energy.clock) communications.Initialize(this, energy.clock);
         interactionFilter.SetLayerMask(obstacleMask);
         interactionFilter.useTriggers = false;
     }
@@ -87,7 +93,7 @@ public sealed class ElectricalControls : MonoBehaviour
             if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
             {
                 if (satelliteMenu && satelliteMenu.IsOpen) satelliteMenu.Back();
-                else Close();
+                else Back();
             }
             return;
         }
@@ -131,7 +137,7 @@ public sealed class ElectricalControls : MonoBehaviour
         overlay.SetAsLastSibling();
         overlay.gameObject.SetActive(true);
         UpdatePhase();
-        Show(item.OpensBattery ? Screen.Battery : Screen.Overview);
+        Show(item.OpensBattery ? Screen.Battery : Screen.Selection);
         CenterAndScale(overlay, content);
         EventSystem.current?.SetSelectedGameObject(null);
     }
@@ -141,6 +147,8 @@ public sealed class ElectricalControls : MonoBehaviour
         if (!isOpen) return;
         isOpen = false;
         if (satelliteMenu) satelliteMenu.Hide();
+        terminal?.Hide();
+        if (communications) communications.SaveNow();
         if (overlay) overlay.gameObject.SetActive(false);
         selected = null;
         activeBattery = null;
@@ -158,6 +166,7 @@ public sealed class ElectricalControls : MonoBehaviour
     void OnDestroy()
     {
         if (overlay) Destroy(overlay.gameObject);
+        terminal?.Dispose();
         foreach (var sprite in slices) Destroy(sprite);
     }
 
@@ -202,13 +211,15 @@ public sealed class ElectricalControls : MonoBehaviour
         Button(regular, "Solar array tab", new Rect(35, 390, 580, 214), Color.clear, () => Show(Screen.Solar));
         Button(regular, "Battery tab", new Rect(35, 628, 580, 216), Color.clear, () => Show(Screen.Battery));
         Button(regular, "Power distributor tab", new Rect(35, 868, 580, 218), Color.clear, () => Show(Screen.Overview));
-        Button(regular, "Close electrical menu", new Rect(25, 1408, 310, 118), Color.clear, Close);
+        Button(regular, "Electrical back", new Rect(25, 1408, 310, 118), Color.clear, Back);
         badge = Field(regular, "Live available power", new Rect(2278, 78, 425, 94), 43);
         context = Field(regular, "Equipment identity", new Rect(790, 168, 1150, 35), 26);
         BuildAllocation();
         BuildCommunications();
+        BuildSelection();
+        terminal = new CommunicationsTerminalUI(content, communications, transmissionArtwork, incomingOnlineArtwork,
+            incomingOfflineArtwork, () => Show(Screen.Communications));
         Action(regular, "Allocate power", new Rect(1280, 73, 470, 76), () => Show(Screen.Allocation), size: 40);
-        Action(regular, "Communications", new Rect(1770, 73, 478, 76), () => Show(Screen.Communications), size: 40);
         overlay.gameObject.SetActive(false);
     }
 
@@ -290,14 +301,39 @@ public sealed class ElectricalControls : MonoBehaviour
 
     void ShowEquipment() => Show(equipmentScreen);
 
+    void Back()
+    {
+        if (screen == Screen.Selection || (selected && selected.OpensBattery && screen <= Screen.Battery)) Close();
+        else if (screen == Screen.Transmission || screen == Screen.Inbox) Show(Screen.Communications);
+        else if (screen == Screen.Allocation) ShowEquipment();
+        else Show(Screen.Selection);
+    }
+
+    void BuildSelection()
+    {
+        selectionPage = CommunicationsTerminalUI.NativeLayout(content, "Supplied system selection");
+        Picture(selectionPage, "Selection artwork", new Rect(0, 0, 1672, 941), selectionArtwork);
+        Button(selectionPage, "Electricity", new Rect(264, 698, 519, 101), Color.clear, () => Show(Screen.Overview));
+        Button(selectionPage, "Communications", new Rect(892, 698, 522, 101), Color.clear, () => Show(Screen.Communications));
+        Button(selectionPage, "Back", new Rect(15, 862, 190, 65), Color.clear, Close);
+        selectionGeneration = CommunicationsTerminalUI.Reading(selectionPage, "Live generation", new Rect(630, 549, 123, 43), 31);
+        selectionDemand = CommunicationsTerminalUI.Reading(selectionPage, "Live demand", new Rect(630, 613, 123, 43), 31);
+        selectionSignal = CommunicationsTerminalUI.Reading(selectionPage, "Actual signal", new Rect(1230, 549, 159, 43), 30);
+        selectionStatus = CommunicationsTerminalUI.Reading(selectionPage, "Physical link", new Rect(1230, 613, 159, 43), 30);
+        selectionAvailable = CommunicationsTerminalUI.Reading(selectionPage, "Available power", new Rect(1394, 53, 230, 43), 29);
+    }
+
     void Show(Screen value)
     {
         screen = value;
         if (value <= Screen.Battery) equipmentScreen = value;
         bool allocating = value == Screen.Allocation;
-        regular.gameObject.SetActive(!allocating && value != Screen.Communications);
+        regular.gameObject.SetActive(value <= Screen.Battery);
         allocationPage.gameObject.SetActive(allocating);
         communicationsPage.gameObject.SetActive(value == Screen.Communications);
+        selectionPage.gameObject.SetActive(value == Screen.Selection);
+        terminal?.Hide();
+        if (value == Screen.Transmission || value == Screen.Inbox) terminal.Show(value == Screen.Inbox);
         for (int i = 0; i < pages.Length; i++) pages[i].SetActive(!allocating && i == (int)value);
         Refresh();
     }
@@ -335,6 +371,16 @@ public sealed class ElectricalControls : MonoBehaviour
 
     void Refresh()
     {
+        if (screen == Screen.Transmission || screen == Screen.Inbox) return;
+        if (screen == Screen.Selection)
+        {
+            Set(selectionGeneration, $"{energy.GenerationKW:0.0} kW");
+            Set(selectionDemand, $"{energy.DemandKW:0.0} kW");
+            Set(selectionAvailable, $"{Math.Max(0, energy.GenerationKW - energy.DemandKW):0.0} kW available");
+            Set(selectionSignal, $"{dish.Signal * 100:0.0}%");
+            Set(selectionStatus, communications.Model.Online ? "Online" : "Offline");
+            return;
+        }
         if (screen == Screen.Communications) { RefreshCommunications(); return; }
         if (screen == Screen.Allocation) { RefreshAllocation(); return; }
         Set(badge, $"{Math.Max(0, energy.GenerationKW - energy.DemandKW):0.00} kW available");
@@ -384,7 +430,10 @@ public sealed class ElectricalControls : MonoBehaviour
         });
         chargerButtonLabel = Label(chargerButton.transform, "Charger action", new Rect(0, 0, 820, 105), "",
             39, TextAnchor.MiddleCenter, FontStyle.Bold);
-        Button(communicationsPage, "Back to electricity", new Rect(25, 1408, 310, 118), Color.clear, ShowEquipment);
+        Button(communicationsPage, "Satellite alignment tab", new Rect(35, 390, 580, 214), Color.clear, OpenAlignment);
+        Button(communicationsPage, "Transmission channel tab", new Rect(35, 628, 580, 216), Color.clear, () => Show(Screen.Transmission));
+        Button(communicationsPage, "Incoming messages tab", new Rect(35, 868, 580, 218), Color.clear, () => Show(Screen.Inbox));
+        Button(communicationsPage, "Back to system selection", new Rect(25, 1408, 310, 118), Color.clear, Back);
         communicationsPage.gameObject.SetActive(false);
     }
 
@@ -398,9 +447,9 @@ public sealed class ElectricalControls : MonoBehaviour
     void RefreshCommunications()
     {
         Set(communicationsSignal, $"{dish.Signal * 100:0.0}% Signal strength");
-        Set(communicationsLink, dish.IsLocked ? "Locked" : "Offline");
+        Set(communicationsLink, communications.Model.Online ? "Locked" : "Offline");
         communicationsSignal.color = Color.Lerp(Orange, Green, (float)dish.Signal);
-        communicationsLink.color = dish.IsLocked ? Green : Orange;
+        communicationsLink.color = communications.Model.Online ? Green : Orange;
         var rover = RoverVehicle.Instance;
         Set(roverStatus, rover ? $"Rover {rover.Charge:P0} · {rover.ChargerStatus}" : "Rover unavailable");
         Set(chargerButtonLabel, rover && rover.IsConnected ? "Disconnect rover charger" : "Start rover charging");

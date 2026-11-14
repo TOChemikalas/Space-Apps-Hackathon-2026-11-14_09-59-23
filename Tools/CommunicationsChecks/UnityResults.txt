@@ -1,0 +1,42 @@
+Merged onto 4d713c2, 2026-11-15.
+Unity 6000.5.10f1, isolated copied project, batch Play Mode with Direct3D 11.
+Original project, HUD, survival, rover and energy scripts preserved.
+Save profile uses a unique CodexIsolatedChecks/CommunicationsCheck-* directory.
+33 Play Mode assertions passed. Visual appearance and mouse ergonomics not manually verified.
+Initial -nographics attempt crashed in rendering; graphics-enabled rerun passed.
+
+CHECK PASS: Scene has initialized communications binding
+CHECK PASS: Computer approach is within configured interaction range
+CHECK PASS: Computer white outline in range
+CHECK PASS: Outline removed outside range
+Input diagnostic: enabled=True, pressed=True, key=True
+CHECK PASS: E opens selection artwork and blocks movement
+CHECK PASS: Selection hotspot matches artwork coordinates
+CHECK PASS: Electricity chain preserved
+CHECK PASS: Electricity Back returns to selection
+CHECK PASS: Communications selection opens existing menu
+CHECK PASS: Existing dish minigame opens
+CHECK PASS: Satellite Back returns to Communications
+CHECK PASS: Transmission opens
+CHECK PASS: Transmission uses Enter without a Transmit button
+CHECK PASS: Enter submits instead of adding a newline
+CHECK PASS: Losing focus does not transmit
+CHECK PASS: Physical offline blocks outgoing transmission
+CHECK PASS: Physical link refreshes outgoing UI without reopening
+CHECK PASS: UI distress establishes absolute milestone
+CHECK PASS: Clock delivers acknowledgment
+CHECK PASS: Inbox list dynamically populated
+CHECK PASS: Selection displays full read-only acknowledgment and marks read
+CHECK PASS: Inbox does not accept typing
+CHECK PASS: Unity JsonUtility save restore preserves read inbox without duplicates
+CHECK PASS: Open inbox refreshes offline status and preserves received body
+CHECK PASS: Narrative termination does not break hardware
+CHECK PASS: Unity save/load preserves permanent isolation and history
+CHECK PASS: Final Back restores gameplay input
+CHECK PASS: Battery still opens its own equipment screen
+CHECK PASS: Battery close restores movement
+CHECK PASS: Scoped disk save exists only in isolated test profile
+CHECK PASS: Scene recreation preserves narrative, inbox and read state
+CHECK PASS: Scene recreation restores authoritative clock and physical alignment
+CHECK PASS: Actual disk JSON reload preserves termination without duplicate delivery
+COMMUNICATIONS UNITY PASS: 33 Play Mode assertions.

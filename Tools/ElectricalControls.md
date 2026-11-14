@@ -4,10 +4,10 @@ Implemented directly in `Assets/Scenes/SampleScene.unity`; no Inspector referenc
 
 ## Player flow
 
-- Approach the Operations computer in the living-quarters Operations room. The closest reachable electrical device gets a white outline. Press **E** to open its Generation/Demand screen.
+- Approach the Operations computer in the living-quarters Operations room. The closest reachable electrical device gets a white outline. Press **E** to open the supplied system-selection screen, then select Electricity or Communications. See `Communications.md` for the integrated terminal flow.
 - Approach either battery in the interior Power room to open that battery's own readings directly. The two existing outside battery objects also open their corresponding unit's menu. Interior and exterior views reference the same two Battery simulation components; no extra stored-energy state is created.
 - The left-hand equipment buttons switch between Solar array, Battery bank, and Power distributor. Operations' Battery bank tab shows bank totals; entering via a battery keeps that specific unit selected.
-- Choose **Allocate power** to open the allocation screen. Select a consumer to reveal its + / minus controls. Changes apply immediately; Back/X returns to electricity. Escape or the electrical menu's Back closes the modal and restores the previous movement-enabled state. The simulation continues while a menu is open.
+- Choose **Allocate power** to open the allocation screen. Select a consumer to reveal its + / minus controls. Changes apply immediately; Back/X returns to electricity. Back/Escape returns to the parent screen; leaving system selection closes the modal and restores the previous movement-enabled state. Direct battery entry still closes directly. The simulation continues while a menu is open.
 
 ## Artwork and live fields
 

@@ -39,4 +39,12 @@ public sealed class MarsClock : MonoBehaviour
         Seconds = Math.Floor(Seconds / SecondsPerSol) * SecondsPerSol + ((hour % 24 + 24) % 24) / 24 * SecondsPerSol;
         Advanced?.Invoke(Seconds, Seconds);
     }
+
+    // Restores an absolute save timestamp without integrating gameplay through the skipped interval.
+    public void RestoreSeconds(double seconds)
+    {
+        if (seconds < 0 || double.IsNaN(seconds) || double.IsInfinity(seconds)) return;
+        Seconds = seconds;
+        Advanced?.Invoke(Seconds, Seconds);
+    }
 }
