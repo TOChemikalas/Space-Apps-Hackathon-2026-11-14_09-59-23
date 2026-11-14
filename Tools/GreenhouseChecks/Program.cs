@@ -76,5 +76,6 @@ static class Checks
         Check(persistent.IsReady, "Growth independent of proximity");
         Console.WriteLine($"PASS: {passed} crop and clock assertions.");
         SceneChecks.Run();
+        DoorChecks.Run();
     }
 }

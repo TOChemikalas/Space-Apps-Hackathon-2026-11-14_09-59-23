@@ -73,7 +73,7 @@ static class SceneChecks
             foreach (Match sprite in sprites)
                 Assert(guidToPath.TryGetValue(sprite.Groups[1].Value, out var path) && File.Exists(path), name + " sprite exists");
         }
-        foreach (var block in blocks.Where(pair => pair.Key >= 2100000000 && pair.Key < 2200000000))
+        foreach (var block in blocks.Where(pair => pair.Key >= 2100000000 && pair.Key < 2300000000))
             foreach (Match guid in Regex.Matches(block.Value, @"guid: ([a-f0-9]{32})"))
                 Assert(guid.Groups[1].Value.StartsWith("00000000") || guidToPath.ContainsKey(guid.Groups[1].Value), "Greenhouse asset resolves");
 
@@ -123,6 +123,38 @@ static class SceneChecks
         var exit = boxes.Single(box => box.Id == 2100002032);
         Assert(reached.Any(cell => Math.Abs(spawn.x + cell.x * .1 - exit.X) < exit.W / 2
             && Math.Abs(spawn.y + cell.y * .1 - exit.Y) < exit.H / 2), "Walkable route to exit");
+        Assert(types.Count(pair => pair.Value == 20) == 1, "One existing camera");
+        var livingSpawn = Pose(2200002001);
+        var livingReturn = Pose(2200002011);
+        var mainExit = boxes.Single(box => box.Id == 2200002032);
+        var mainEntry = boxes.Single(box => box.Id == 2200002022);
+        Assert(!Blocked(livingSpawn.x, livingSpawn.y), "Main interior arrival is clear");
+        Assert(!Blocked(livingReturn.x, livingReturn.y), "Main exterior return is clear");
+        Assert(Math.Abs(livingReturn.y - mainEntry.Y) > mainEntry.H / 2 + .5, "Main exterior return outside trigger");
+        Assert(Math.Abs(livingSpawn.y - mainExit.Y) > mainExit.H / 2 + .5, "Main interior arrival outside exit trigger");
+        // Test the player's full 1x1 footprint against the actual scene collision rectangles.
+        var livingReached = new HashSet<(int x, int y)> { (0, 0) };
+        queue.Clear(); queue.Enqueue((0, 0));
+        while (queue.TryDequeue(out var cell))
+            foreach (var next in new[] { (cell.x + 1, cell.y), (cell.x - 1, cell.y), (cell.x, cell.y + 1), (cell.x, cell.y - 1) })
+            {
+                double x = livingSpawn.x + next.Item1 * .1, y = livingSpawn.y + next.Item2 * .1;
+                if (x < 181 || x > 219 || y < -12 || y > 11 || Blocked(x, y) || !livingReached.Add(next)) continue;
+                queue.Enqueue(next);
+            }
+        foreach (var destination in new[] {
+            ("Crew quarters", 485, 310), ("Hygiene", 775, 310), ("Life support", 1080, 400),
+            ("EVA prep", 490, 570), ("Storage", 465, 645), ("Operations", 925, 570), ("Power", 940, 715) })
+        {
+            double tx = 200 + (destination.Item2 - 768) / 40.0, ty = (512 - destination.Item3) / 40.0;
+            Assert(livingReached.Any(cell => Math.Abs(livingSpawn.x + cell.x * .1 - tx) < .13
+                && Math.Abs(livingSpawn.y + cell.y * .1 - ty) < .13), "Main building route to " + destination.Item1);
+        }
+        Assert(livingReached.Any(cell => Math.Abs(livingSpawn.x + cell.x * .1 - mainExit.X) < mainExit.W / 2
+            && Math.Abs(livingSpawn.y + cell.y * .1 - mainExit.Y) < mainExit.H / 2), "Main building route to exit");
+        // Straight approach through the doorway must remain free of exterior solids.
+        for (double y = livingReturn.y; y < mainEntry.Y; y += .05)
+            Assert(!Blocked(mainEntry.X, y), "Main exterior doorway approach remains accessible");
         Console.WriteLine($"PASS: {passed} serialized scene/asset assertions, including geometric walkway reachability (not a Unity physics test).");
     }
 }
