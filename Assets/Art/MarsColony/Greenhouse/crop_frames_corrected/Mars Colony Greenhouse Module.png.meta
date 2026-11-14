@@ -1,0 +1,403 @@
+fileFormatVersion: 2
+guid: 19011bc6b6453db40b0a4477fca9ceeb
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 674276787718559402
+    second: Mars Colony Greenhouse Module_0
+  - first:
+      213: -697735580115175301
+    second: Mars Colony Greenhouse Module_1
+  - first:
+      213: 1310310880253801416
+    second: Mars Colony Greenhouse Module_2
+  - first:
+      213: 6392606063033795430
+    second: Mars Colony Greenhouse Module_3
+  - first:
+      213: -8417877784006228684
+    second: Mars Colony Greenhouse Module_4
+  - first:
+      213: 5305964323301875906
+    second: Mars Colony Greenhouse Module_5
+  - first:
+      213: -478548721242157851
+    second: Mars Colony Greenhouse Module_6
+  - first:
+      213: 8956934042140317762
+    second: Mars Colony Greenhouse Module_7
+  - first:
+      213: -6872900405320519298
+    second: Mars Colony Greenhouse Module_8
+  - first:
+      213: -4753828213375375712
+    second: Mars Colony Greenhouse Module_9
+  - first:
+      213: 6663611447082037498
+    second: Mars Colony Greenhouse Module_10
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1435
+        height: 1060
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa6914c7a238b5900800000000000000
+      internalID: 674276787718559402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_1
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 1027
+        width: 23
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b787518cf252156f0800000000000000
+      internalID: -697735580115175301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_2
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 1012
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c37bd2adc82f2210800000000000000
+      internalID: 1310310880253801416
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_3
+      rect:
+        serializedVersion: 2
+        x: 1398
+        y: 112
+        width: 19
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6634328485917b850800000000000000
+      internalID: 6392606063033795430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_4
+      rect:
+        serializedVersion: 2
+        x: 1365
+        y: 88
+        width: 16
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43508a951c0bd2b80800000000000000
+      internalID: -8417877784006228684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_5
+      rect:
+        serializedVersion: 2
+        x: 652
+        y: 29
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c0ed49907292a940800000000000000
+      internalID: 5305964323301875906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_6
+      rect:
+        serializedVersion: 2
+        x: 901
+        y: 15
+        width: 28
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ecc4a6397adb59f0800000000000000
+      internalID: -478548721242157851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_7
+      rect:
+        serializedVersion: 2
+        x: 1084
+        y: 39
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24890623e0c6d4c70800000000000000
+      internalID: 8956934042140317762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_8
+      rect:
+        serializedVersion: 2
+        x: 643
+        y: 27
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e717b3cde7d8e90a0800000000000000
+      internalID: -6872900405320519298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_9
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 17
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a6e7824d62070eb0800000000000000
+      internalID: -4753828213375375712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mars Colony Greenhouse Module_10
+      rect:
+        serializedVersion: 2
+        x: 989
+        y: 15
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af03d884e47e97c50800000000000000
+      internalID: 6663611447082037498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Mars Colony Greenhouse Module_0: 674276787718559402
+      Mars Colony Greenhouse Module_1: -697735580115175301
+      Mars Colony Greenhouse Module_10: 6663611447082037498
+      Mars Colony Greenhouse Module_2: 1310310880253801416
+      Mars Colony Greenhouse Module_3: 6392606063033795430
+      Mars Colony Greenhouse Module_4: -8417877784006228684
+      Mars Colony Greenhouse Module_5: 5305964323301875906
+      Mars Colony Greenhouse Module_6: -478548721242157851
+      Mars Colony Greenhouse Module_7: 8956934042140317762
+      Mars Colony Greenhouse Module_8: -6872900405320519298
+      Mars Colony Greenhouse Module_9: -4753828213375375712
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

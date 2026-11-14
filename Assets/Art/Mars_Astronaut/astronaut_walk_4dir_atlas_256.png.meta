@@ -192,9 +192,9 @@ TextureImporter:
       name: astronaut_walk_4dir_atlas_256_2
       rect:
         serializedVersion: 2
-        x: 577
+        x: 574
         y: 784
-        width: 125
+        width: 131
         height: 220
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -214,9 +214,9 @@ TextureImporter:
       name: astronaut_walk_4dir_atlas_256_3
       rect:
         serializedVersion: 2
-        x: 832
+        x: 830
         y: 784
-        width: 128
+        width: 132
         height: 220
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -280,9 +280,9 @@ TextureImporter:
       name: astronaut_walk_4dir_atlas_256_6
       rect:
         serializedVersion: 2
-        x: 578
+        x: 579
         y: 528
-        width: 123
+        width: 122
         height: 220
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -368,9 +368,9 @@ TextureImporter:
       name: astronaut_walk_4dir_atlas_256_10
       rect:
         serializedVersion: 2
-        x: 572
+        x: 571
         y: 272
-        width: 135
+        width: 137
         height: 220
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -392,7 +392,7 @@ TextureImporter:
         serializedVersion: 2
         x: 829
         y: 272
-        width: 134
+        width: 135
         height: 220
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -456,9 +456,9 @@ TextureImporter:
       name: astronaut_walk_4dir_atlas_256_14
       rect:
         serializedVersion: 2
-        x: 578
+        x: 577
         y: 16
-        width: 123
+        width: 126
         height: 220
       alignment: 0
       pivot: {x: 0, y: 0}
