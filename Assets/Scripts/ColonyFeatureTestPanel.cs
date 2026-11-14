@@ -23,7 +23,7 @@ public sealed class ColonyFeatureTestPanel : MonoBehaviour
             return;
         }
 
-        var card = CreateRect("Colony feature test", canvas.transform, 12, 12, 314, 167);
+        var card = CreateRect("Colony feature test", canvas.transform, 12, 66, 314, 167);
         card.gameObject.AddComponent<Image>().color = new Color32(24, 29, 36, 245);
         Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         status = AddText(card, font, "", 12, 8, 290, 80, TextAnchor.UpperLeft);

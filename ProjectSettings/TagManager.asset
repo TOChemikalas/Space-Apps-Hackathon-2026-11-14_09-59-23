@@ -44,6 +44,9 @@ TagManager:
   - name: Ground
     uniqueID: 2222865529
     locked: 0
+  - name: Astronaut
+    uniqueID: 1745331729
+    locked: 0
   - name: Buildings
     uniqueID: 3367173745
     locked: 0

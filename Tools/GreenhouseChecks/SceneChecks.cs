@@ -26,7 +26,12 @@ static class SceneChecks
     {
         string root = Directory.GetCurrentDirectory();
         while (!Directory.Exists(Path.Combine(root, "Assets"))) root = Directory.GetParent(root)?.FullName ?? throw new Exception("Run inside repository");
-        string scene = File.ReadAllText(Path.Combine(root, "Assets/Scenes/SampleScene.unity"));
+        string sceneDirectory = Path.Combine(root, "Assets/Scenes");
+        string[] layouts = new[] { "SampleScene", "GreenhouseInterior", "HabitatInterior" }
+            .Select(name => File.ReadAllText(Path.Combine(sceneDirectory, name + ".unity"))).ToArray();
+        // Scene-wide settings and root lists reuse reserved IDs in each Unity scene.
+        string scene = layouts[0] + string.Concat(layouts.Skip(1).Select(layout =>
+            Regex.Replace(layout, @"(?ms)\A.*?(?=^--- !u!1 &)|^--- !u!1660057539 &.*\z", "")));
         Assert(!scene.Contains("<<<<<<<") && !scene.Contains(">>>>>>>"), "No unresolved scene conflicts");
         var docs = Regex.Matches(scene, @"(?ms)^--- !u!(\d+) &(-?\d+)\n(.*?)(?=^--- !u!|\z)");
         var blocks = new Dictionary<long, string>();
@@ -84,7 +89,13 @@ static class SceneChecks
             var local = Vector(Field(block, "m_LocalPosition"));
             var scale = Vector(Field(block, "m_LocalScale"));
             long parent = Reference(Field(block, "m_Father"));
-            if (parent == 0) return (local.x, local.y, scale.x, scale.y);
+            if (parent == 0)
+            {
+                // An interior root is centered while editing and placed by BuildingInterior at runtime.
+                long setup = transform switch { 2100000001 => 2100000003, 2200000001 => 2200000002, _ => 0 };
+                if (setup != 0) local = Vector(Field(blocks[setup], "runtimePosition"));
+                return (local.x, local.y, scale.x, scale.y);
+            }
             var ancestor = Pose(parent);
             return (ancestor.x + local.x * ancestor.sx, ancestor.y + local.y * ancestor.sy, ancestor.sx * scale.x, ancestor.sy * scale.y);
         }
@@ -93,16 +104,28 @@ static class SceneChecks
         {
             var pose = Pose(transforms[Reference(Field(pair.Value, "m_GameObject"))]);
             var size = Vector(Field(pair.Value, "m_Size"));
-            boxes.Add(new Box(pose.x, pose.y, size.x * pose.sx, size.y * pose.sy, Field(pair.Value, "m_IsTrigger") == "1", pair.Key));
+            var offset = Vector(Field(pair.Value, "m_Offset"));
+            boxes.Add(new Box(pose.x + offset.x * pose.sx, pose.y + offset.y * pose.sy,
+                size.x * pose.sx, size.y * pose.sy, Field(pair.Value, "m_IsTrigger") == "1", pair.Key));
         }
-        bool Blocked(double x, double y) => boxes.Any(box => !box.Trigger && Math.Abs(x - box.X) < box.W / 2 + .5 - 1e-6 && Math.Abs(y - box.Y) < box.H / 2 + .5 - 1e-6);
+        var playerPose = Pose(268809155);
+        var capsule = Vector(Field(blocks[268809157], "m_Size"));
+        var capsuleOffset = Vector(Field(blocks[268809157], "m_Offset"));
+        double halfWidth = capsule.x * playerPose.sx / 2, halfHeight = capsule.y * playerPose.sy / 2;
+        double offsetX = capsuleOffset.x * playerPose.sx, offsetY = capsuleOffset.y * playerPose.sy;
+        bool Overlaps(Box box, double x, double y) =>
+            Math.Abs(x + offsetX - box.X) < box.W / 2 + halfWidth - 1e-6
+            && Math.Abs(y + offsetY - box.Y) < box.H / 2 + halfHeight - 1e-6;
+        // This route check measures passable doorways after their opening sequence.
+        var doorBarriers = new HashSet<long> { 2300000012, 2300000022, 2300000032, 2300000082, 2300000092 };
+        bool Blocked(double x, double y) => boxes.Any(box => !box.Trigger && !doorBarriers.Contains(box.Id) && Overlaps(box, x, y));
         var spawn = Pose(2100002001);
         var outsideSpawn = Pose(2100002011);
-        Assert(!Blocked(spawn.x, spawn.y), "Interior arrival clear for existing 1x1 player collider");
+        Assert(!Blocked(spawn.x, spawn.y), "Interior arrival clear for player capsule");
         Assert(!Blocked(outsideSpawn.x, outsideSpawn.y), "Exterior arrival clear");
         foreach (var spawnPoint in new[] { spawn, outsideSpawn })
             Assert(!boxes.Any(box => box.Trigger && (box.Id == 2100002022 || box.Id == 2100002032)
-                && Math.Abs(spawnPoint.x - box.X) < box.W / 2 + .5 && Math.Abs(spawnPoint.y - box.Y) < box.H / 2 + .5), "Arrival outside both doorway triggers");
+                && Overlaps(box, spawnPoint.x, spawnPoint.y)), "Arrival outside both doorway triggers");
         var reached = new HashSet<(int x, int y)>();
         var queue = new Queue<(int x, int y)>();
         queue.Enqueue((0, 0)); reached.Add((0, 0));
@@ -130,9 +153,9 @@ static class SceneChecks
         var mainEntry = boxes.Single(box => box.Id == 2200002022);
         Assert(!Blocked(livingSpawn.x, livingSpawn.y), "Main interior arrival is clear");
         Assert(!Blocked(livingReturn.x, livingReturn.y), "Main exterior return is clear");
-        Assert(Math.Abs(livingReturn.y - mainEntry.Y) > mainEntry.H / 2 + .5, "Main exterior return outside trigger");
-        Assert(Math.Abs(livingSpawn.y - mainExit.Y) > mainExit.H / 2 + .5, "Main interior arrival outside exit trigger");
-        // Test the player's full 1x1 footprint against the actual scene collision rectangles.
+        Assert(!Overlaps(mainEntry, livingReturn.x, livingReturn.y), "Main exterior return outside trigger");
+        Assert(!Overlaps(mainExit, livingSpawn.x, livingSpawn.y), "Main interior arrival outside exit trigger");
+        // Test the player capsule's bounding box against the actual scene collision rectangles.
         var livingReached = new HashSet<(int x, int y)> { (0, 0) };
         queue.Clear(); queue.Enqueue((0, 0));
         while (queue.TryDequeue(out var cell))

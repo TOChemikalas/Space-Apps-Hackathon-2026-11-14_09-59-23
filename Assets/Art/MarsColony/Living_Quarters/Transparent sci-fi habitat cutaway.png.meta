@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 6c616216f5d6435e895da0432f4100e3
+guid: 603b7f0f8d111ad4b89534deb059afea
 TextureImporter:
   serializedVersion: 13
   internalIDToNameTable:
   - first:
       213: 21300000
-    second: Interiorofliving
+    second: HabitatInterior
   - first:
       213: 21300001
     second: Airlock_Closed
@@ -48,7 +48,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Interiorofliving
+      name: HabitatInterior
       rect:
         serializedVersion: 2
         x: 0
@@ -65,7 +65,7 @@ TextureImporter:
       spriteID: e31903cb1042409ab27e6f7bab9d8dcc
       internalID: 21300000
       vertices: []
-      indices:
+      indices: ''
       edges: []
       weights: []
     - serializedVersion: 2
@@ -86,7 +86,7 @@ TextureImporter:
       spriteID: 9b8341d290b84170a64e2a51665909d6
       internalID: 21300001
       vertices: []
-      indices:
+      indices: ''
       edges: []
       weights: []
     outline: []
@@ -94,8 +94,8 @@ TextureImporter:
     bones: []
     secondaryTextures: []
     nameFileIdTable:
-      Interiorofliving: 21300000
+      HabitatInterior: 21300000
       Airlock_Closed: 21300001
-  userData:
-  assetBundleName:
-  assetBundleVariant:
+  userData: ''
+  assetBundleName: ''
+  assetBundleVariant: ''
