@@ -13,7 +13,6 @@ public class BuildingEntrance : MonoBehaviour
     [SerializeField] Vector2 interiorSize = new Vector2(25, 12.5f);
     [SerializeField] bool preserveExteriorZoom;
     [SerializeField, Min(0)] float transitionCooldown = .5f;
-    [SerializeField] AirlockCycle airlock;
     float blockedUntil;
     bool hasEntered;
     Transform cameraParent;
@@ -23,17 +22,7 @@ public class BuildingEntrance : MonoBehaviour
     protected void OnTriggerEnter2D(Collider2D other)
     {
         if (!CanTransition(other)) return;
-        if (airlock && airlock.isActiveAndEnabled && airlock.IsConfigured)
-        {
-            airlock.RequestTransition(this, other);
-            return;
-        }
         Transition();
-    }
-
-    protected void OnTriggerExit2D(Collider2D other)
-    {
-        if (airlock) airlock.LeaveTrigger(this, other);
     }
 
     public void CompleteAirlockTransition(Collider2D other)

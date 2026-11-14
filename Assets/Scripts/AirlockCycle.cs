@@ -7,8 +7,8 @@ public sealed class AirlockCycle : MonoBehaviour
     public enum Phase { Outside, OpeningOuter, ClosingOuter, Stabilizing, OpeningInner,
         EnterHabitat, ClosingInner, Habitat, EnterChamber, Depressurizing, ExitChamber }
     [SerializeField] Rigidbody2D player;
-    [SerializeField] BuildingEntrance exteriorPortal;
-    [SerializeField] BuildingEntrance interiorPortal;
+    [SerializeField] BuildingPortal exteriorPortal;
+    [SerializeField] BuildingPortal interiorPortal;
     [SerializeField] AirlockDoor outerDoor;
     [SerializeField] AirlockDoor innerDoor;
     [SerializeField, Min(0)] float stabilizationSeconds = 3;
@@ -39,7 +39,7 @@ public sealed class AirlockCycle : MonoBehaviour
         if (innerDoor && innerDoor.IsConfigured) innerDoor.CloseImmediately();
     }
 
-    public void RequestTransition(BuildingEntrance portal, Collider2D other)
+    public void RequestTransition(BuildingPortal portal, Collider2D other)
     {
         if (other.attachedRigidbody != player) return;
         if (portal == exteriorPortal && State == Phase.Outside && !running)
@@ -48,14 +48,14 @@ public sealed class AirlockCycle : MonoBehaviour
             Run(Enter());
         }
         else if (portal == interiorPortal && (State == Phase.EnterChamber || State == Phase.ClosingInner
-            || State == Phase.Depressurizing || State == Phase.ExitChamber))
+            || State == Phase.Depressurizing || State == Phase.OpeningOuter || State == Phase.ExitChamber))
         {
             waitingToExit = other;
             if (State == Phase.ExitChamber && !running) Run(Leave());
         }
     }
 
-    public void LeaveTrigger(BuildingEntrance portal, Collider2D other)
+    public void LeaveTrigger(BuildingPortal portal, Collider2D other)
     {
         if (portal == exteriorPortal && waitingOutside == other) waitingOutside = null;
         if (portal == interiorPortal && waitingToExit == other) waitingToExit = null;
@@ -107,7 +107,14 @@ public sealed class AirlockCycle : MonoBehaviour
             State = Phase.Outside;
             yield break;
         }
-        exteriorPortal.CompleteAirlockTransition(waitingOutside);
+        if (!exteriorPortal.CompleteAirlockTransition(waitingOutside))
+        {
+            waitingOutside = null;
+            State = Phase.ClosingOuter;
+            yield return outerDoor.Animate(false);
+            State = Phase.Outside;
+            yield break;
+        }
         waitingOutside = null;
         State = Phase.ClosingOuter;
         yield return outerDoor.Animate(false);
@@ -151,7 +158,11 @@ public sealed class AirlockCycle : MonoBehaviour
 
     IEnumerator Leave()
     {
-        interiorPortal.CompleteAirlockTransition(waitingToExit);
+        if (!interiorPortal.CompleteAirlockTransition(waitingToExit))
+        {
+            waitingToExit = null;
+            yield break;
+        }
         waitingToExit = null;
         State = Phase.ClosingOuter;
         yield return outerDoor.Animate(false);

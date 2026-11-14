@@ -34,7 +34,7 @@ static class Checks
         Check(!single.door.IsOpen && single.gate.enabled,"Closed door blocks crossing");
 
         var outer=Door(); var inner=Door(); var player=new Rigidbody2D();
-        var outside=new BuildingEntrance(); var inside=new BuildingEntrance();
+        var outside=new BuildingPortal(); var inside=new BuildingPortal();
         var cycle=new AirlockCycle();
         Set(cycle,"player",player);Set(cycle,"exteriorPortal",outside);Set(cycle,"interiorPortal",inside);
         Set(cycle,"outerDoor",outer.door);Set(cycle,"innerDoor",inner.door);

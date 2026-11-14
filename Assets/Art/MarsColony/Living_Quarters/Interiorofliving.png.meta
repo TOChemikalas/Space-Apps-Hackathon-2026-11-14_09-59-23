@@ -2,7 +2,13 @@ fileFormatVersion: 2
 guid: 6c616216f5d6435e895da0432f4100e3
 TextureImporter:
   serializedVersion: 13
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: Interiorofliving
+  - first:
+      213: 21300001
+    second: Airlock_Closed
   externalObjects: {}
   mipmaps:
     enableMipMap: 0
@@ -18,21 +24,78 @@ TextureImporter:
     wrapW: 1
   maxTextureSize: 4096
   textureCompression: 0
-  spriteMode: 1
+  spriteMode: 2
   spriteMeshType: 0
   spritePixelsToUnits: 40
   spriteAlignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   alphaUsage: 1
   alphaIsTransparency: 1
+  nPOTScale: 0
   textureType: 8
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 100
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Interiorofliving
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1536
+        height: 1024
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e31903cb1042409ab27e6f7bab9d8dcc
+      internalID: 21300000
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Airlock_Closed
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 334
+        width: 100
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b8341d290b84170a64e2a51665909d6
+      internalID: 21300001
+      vertices: []
+      indices:
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
     secondaryTextures: []
+    nameFileIdTable:
+      Interiorofliving: 21300000
+      Airlock_Closed: 21300001
   userData:
   assetBundleName:
   assetBundleVariant:

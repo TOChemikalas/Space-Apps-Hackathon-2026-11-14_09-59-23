@@ -1,41 +1,57 @@
-﻿# Airlock door sequence
+﻿# Living quarters and airlock
 
-## Status / missing assets
+Implemented in `Assets/Scenes/SampleScene.unity`. The existing **Life systems** building is the living-quarters entrance. Its Transform and surrounding buildings are preserved; its sprite reference now points to the supplied individual `Living_Quarters/life_support_day.png` rather than an unavailable atlas reference.
 
-The four supplied door-opening images were not found in the project or the task attachment. No replacement images were created and no sprites were guessed. The logic and references are prepared in SampleScene, but the new AirlockCycle component is deliberately **disabled** and its new door barriers are initially disabled. The existing building entrance continues to work until the airlock is configured. The animated airlock is not complete or playable yet.
+Approach the front/bottom doorway to enter automatically. Wait inside the chamber for the doors and pressure cycle, then walk north through the inner door. To leave, approach the inner airlock from the habitat, enter the chamber, wait for depressurization, and walk south through the outer doorway. No additional E command or Inspector wiring is needed.
 
-## Required Inspector setup once images are available
+## Scene configuration
 
-1. Select Main Building Interior / Airlock inner door. On AirlockDoor, assign Opening Frames in exact order: closed, beginning to open, mostly open, fully open. Do the same on Airlock outer door using sprites matching that doorway's perspective. Existing renderer and barrier references are already assigned.
-2. Keep the supplied sprites' original pivot, alignment, and scale. The code changes only SpriteRenderer.sprite. Their visual placement cannot be verified until the actual images are available. The current sprite renderers are empty; surrounding interior/exterior art is unchanged.
-3. On Main Building Interior / Airlock cycle - assign door sprites before enabling, enable AirlockCycle **before starting Play mode**, with the astronaut outside. Default stabilization and depressurization delays are 3 real seconds each; both are editable. Animation duration defaults to 0.8 real seconds per door and is editable on each AirlockDoor.
+- Living Quarters Interior is at world (200, 0), using the unchanged `Interiorofliving.png` full sprite at its native aspect ratio and 40 pixels/unit.
+- A continuous EdgeCollider2D perimeter follows the wall outline. Individual box colliders cover beds, desks, crates, hygiene fixtures, EVA equipment, tanks, consoles, and airlock frames, with open room approaches.
+- The existing Life systems building has compound shell/machinery colliders and a clear doorway, plus paired BuildingPortal triggers and SceneSpawn destinations.
+- The existing camera is centered on the interior for this visit. The return spawn restores its original player parent, local transform, and zoom. The astronaut's root scale, capsule, movement, and animation controller are unchanged.
+- Inner and outer AirlockDoor components have all four sprite references assigned. The outer door also animates a linked exterior door renderer. Their collision barriers start closed, and the AirlockCycle component is enabled.
 
-All player, portal, renderer, barrier, and crossing-sensor references are wired. The sequence uses the existing player Rigidbody2D and existing BuildingEntrance teleport/camera behavior. It does not change movement code or camera code.
+## Four images / alignment
 
-## Behavior
+Opening order is closed -> slightly open -> mostly open -> fully open; closing reverses the same sequence.
 
-Approaching the exterior doorway starts the outer door's four-frame opening. Once fully open, the existing building transition places the astronaut inside the chamber. The outer door closes, pressure stabilizes for the configured delay, then the inner door opens. Moving fully clear of the inner door into the habitat closes it.
+1. Closed: door-only slice of existing `Interiorofliving.png`.
+2. Slightly open: `Airlock_door/Gemini_Generated_Image_akrwcgakrwcgakrw.jpg`.
+3. Mostly open: `Airlock_door/Gemini_Generated_Image_k04xcjk04xcjk04x.jpg`.
+4. Fully open: `Airlock_door/Gemini_Generated_Image_k04xcjk04xcjk04px.jpg`.
 
-Approaching the inner door from the habitat opens it while keeping the outer door closed. Crossing fully into the chamber closes the inner door, waits for depressurization, then opens the outer door. The existing exit portal returns the astronaut outside, and the outer door closes. An exit request already touching the exit trigger is retained until opening finishes; leaving that trigger cancels the request. Both doors cannot be opened by conflicting requests, and only the configured astronaut activates the sensors.
+The new files are full-building images. Importer metadata slices only the door regions; the surrounding building is never swapped or animated. The original full interior sprite keeps its texture GUID and fileID 21300000. All four door sprites have centered pivots and matching 2.5 x 2 world-unit bounds without stretching. The JPEGs use 76 pixels/unit to account for their higher resolution. No image pixels were regenerated or edited. The supplied door views differ slightly in their internal perspective/proportions, so visual alignment still needs a Unity check.
 
-Closed and animating doors block movement. Collision is enabled as closing starts and disabled only after all four opening frames finish. Barrier placement bridges each chamber doorway so the astronaut cannot walk around it. The outer door controls both the chamber's outer barrier and a new exterior threshold barrier; existing exterior hitboxes and interior object colliders are unchanged.
+## Timing and interlocks
 
-`AirlockCycle.SafeToProceed` is the single future safe-to-proceed audio hook. No audio assets or system are added.
+Each AirlockDoor's Animation Seconds defaults to 0.8 real seconds. Stabilization Seconds and Depressurization Seconds on Living airlock sequence default to 3 real seconds each.
 
-## Modified files
+Entry: outer opens -> existing portal places the astronaut in the chamber -> outer closes fully -> stabilization timer -> inner opens -> astronaut clears the inner door -> inner closes.
 
-- Added AirlockDoor.cs (+ metadata): non-looping ascending/reverse sprite animation and door-only collision control.
-- Added AirlockCycle.cs (+ metadata): event-driven entry/exit sequence and two configurable pressure delays.
-- Added AirlockSensor.cs (+ metadata): player-only approach/crossing callbacks.
-- BuildingEntrance.cs: optional airlock routing and a completion method that retains the existing transition guards. Existing portals without an enabled/configured airlock keep their prior behavior.
-- SampleScene.unity: optional controller, empty door renderers, initially disabled barriers, crossing triggers, and references on the existing two main-building portals. No surrounding sprites, existing colliders, rendering order, camera configuration, or layout were changed.
-- Tools/AirlockChecks/: focused checks compiling the production airlock scripts with minimal engine stand-ins.
-- Tools/GreenhouseChecks/UnityStubs.cs: a small optional-airlock stand-in keeps the pre-existing standalone transition harness compatible with BuildingEntrance's new optional reference. That unrelated suite was not run for this task.
+Exit: approach opens inner while outer stays closed -> astronaut clears the inner threshold into the chamber -> inner closes fully -> depressurization timer -> outer opens -> existing portal returns the astronaut outside -> outer closes.
 
-## Focused verification
+Closed and animating doors are solid; only a fully opened door permits passage. Crossing sensors are positioned beyond the thresholds so doors do not close on an astronaut still passing through them. The outer door owns separate barriers in the chamber and exterior view. Pending exit contact is retained while the outer door animates, avoiding lost trigger events. Input-based portal interaction cannot bypass an enabled, configured airlock. `AirlockCycle.SafeToProceed` remains the single future confirmation-audio hook; no audio or atmosphere system was added.
 
-`dotnet run --project Tools/AirlockChecks/AirlockChecks.csproj`
+## Changed files
 
-The C# test harness compiled with the production airlock scripts. Execution was blocked by Windows Application Control (0x800711C7), including an attempt outside the sandbox. **No assertions ran and none are reported as passed.** The focused checks cover frame order, overlapping-request rejection, closed/animating gate collision flags, pressure timing, queued exit, player identity, and entry/exit interlocks. There are no packages to install.
+- `SampleScene.unity`: restored living interior, continuous wall boundary, furniture/exterior hitboxes, spawn points, current BuildingPortal components, enabled airlock, door renderers/barriers, and crossing sensors.
+- `BuildingPortal.cs`: optional automatic airlock routing and a guarded local-transition completion method. Existing greenhouse and unrelated portals retain their existing interaction path.
+- `SceneSpawn.cs`: optional interior camera focus and paired camera restoration. Existing spawns without these options behave as before.
+- `AirlockCycle.cs`: uses the current BuildingPortal architecture, checks transition success, and retains exit contact during outer-door opening.
+- `AirlockDoor.cs`: optional linked exterior renderer uses the same four-frame sequence.
+- `BuildingEntrance.cs`: disconnected its obsolete optional airlock hook so the new cycle uses only the project's current portals; legacy transition behavior remains available.
+- `AirlockDoor.prefab`: assigned door sprites and its own sorting layer for placement above interior artwork.
+- `Living_Quarters/life_support_day.png.meta`: explicitly centered the existing cropped exterior sprite pivot to match its measured hitboxes.
+- `Tools/AirlockChecks/`: focused production-script compile checks and current implementation documentation.
 
-A focused serialized-reference check confirmed the optional cycle is disabled and all three new solid barriers are disabled while sprites are missing. Code paths were reviewed for entry/exit ordering. Unity Play Mode, actual trigger contacts, door alignment/rendering, and runtime sequencing have not been executed. No broad gameplay test suite was run.
+MarsClock, solar arrays, batteries, greenhouse growth, astronaut movement, and original image files were not changed.
+
+## Verification and limits
+
+- Focused harness build: `dotnet build Tools/AirlockChecks/AirlockChecks.csproj --no-restore` succeeded with zero warnings/errors, compiling production AirlockDoor, AirlockCycle, and AirlockSensor with minimal engine stand-ins.
+- 731 focused static scene/geometry checks passed: new local references, safe spawn/approach positions, routes to all seven room areas and the exit, continuous perimeter containment, and inner/outer barrier routes under closed and open configurations. These used the actual scene's scaled capsule bounding footprint (0.1225 x 0.09 units) and conservative wall clearance. They do not simulate Unity physics.
+- `dotnet run --no-build --project Tools/AirlockChecks/AirlockChecks.csproj` was attempted normally and outside the sandbox. Windows Application Control blocked the compiled test assembly (0x800711C7). **No runtime assertions are claimed as passed.**
+- Unity Editor is unavailable here. Unity compilation, actual trigger/physics contacts, frame alignment, animation timing, camera appearance, and full entry/exit gameplay have not been exercised in Play Mode. All scene references are assigned; no manual setup is outstanding.
+
+The provided interior has an opaque checkerboard background. It remains as supplied. Painted doorway panels are traversable only when their matching airlock barrier opens; other painted room-door openings remain navigable without adding unrelated door mechanics.

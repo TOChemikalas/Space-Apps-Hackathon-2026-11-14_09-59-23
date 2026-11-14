@@ -14,6 +14,7 @@ public sealed class BuildingPortal : MonoBehaviour
     [SerializeField] Canvas promptCanvas;
     [SerializeField] bool entersInterior;
     [SerializeField, Min(0)] float transitionCooldown = .5f;
+    [SerializeField] AirlockCycle airlock;
     float blockedUntil;
     Rigidbody2D nearbyPlayer;
     InputAction interact;
@@ -37,7 +38,7 @@ public sealed class BuildingPortal : MonoBehaviour
 
     void LateUpdate()
     {
-        if (greenhouse || !promptCanvas) return;
+        if (greenhouse || (airlock && airlock.isActiveAndEnabled) || !promptCanvas) return;
         if (!promptOverlay && CanUse)
         {
             RectTransform overlay = GreenhouseCanvas.Overlay(promptCanvas, name + " prompt");
@@ -58,11 +59,14 @@ public sealed class BuildingPortal : MonoBehaviour
         if (!player || !player.TryGetComponent<AstronautController>(out var astronaut) || !astronaut.isActiveAndEnabled) return;
         nearbyPlayer = player;
         if (greenhouse) greenhouse.DoorEntered(this);
+        if (airlock && airlock.isActiveAndEnabled && airlock.IsConfigured)
+            airlock.RequestTransition(this, other);
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.attachedRigidbody != nearbyPlayer) return;
+        if (airlock) airlock.LeaveTrigger(this, other);
         ClearNearbyPlayer();
     }
 
@@ -85,15 +89,13 @@ public sealed class BuildingPortal : MonoBehaviour
 
     public void Interact()
     {
+        if (airlock && airlock.isActiveAndEnabled && airlock.IsConfigured) return;
         if (!CanUse || lastInteractionFrame == Time.frameCount) return;
         lastInteractionFrame = Time.frameCount;
 
         if (arrival)
         {
-            blockedUntil = Time.unscaledTime + transitionCooldown;
-            if (pairedDoor) pairedDoor.blockedUntil = blockedUntil;
-            if (greenhouse) greenhouse.SetInside(entersInterior);
-            arrival.PlacePlayer(nearbyPlayer);
+            PlaceNearbyPlayer();
             return;
         }
 
@@ -108,6 +110,21 @@ public sealed class BuildingPortal : MonoBehaviour
         SceneManager.sceneLoaded += SceneFinishedLoading;
         if (SceneManager.LoadSceneAsync(destinationScene, LoadSceneMode.Single) == null)
             FinishTransition();
+    }
+
+    public bool CompleteAirlockTransition(Collider2D other)
+    {
+        if (!CanUse || !arrival || other.attachedRigidbody != nearbyPlayer) return false;
+        PlaceNearbyPlayer();
+        return true;
+    }
+
+    void PlaceNearbyPlayer()
+    {
+        blockedUntil = Time.unscaledTime + transitionCooldown;
+        if (pairedDoor) pairedDoor.blockedUntil = blockedUntil;
+        if (greenhouse) greenhouse.SetInside(entersInterior);
+        arrival.PlacePlayer(nearbyPlayer);
     }
 
     private static void SceneFinishedLoading(Scene scene, LoadSceneMode mode)

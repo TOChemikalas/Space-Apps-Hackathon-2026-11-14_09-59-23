@@ -63,8 +63,8 @@ namespace UnityEngine
         }
     }
 }
-public class BuildingEntrance : UnityEngine.Object
+public class BuildingPortal : UnityEngine.Object
 {
     public int transitions;
-    public void CompleteAirlockTransition(UnityEngine.Collider2D other) => transitions++;
+    public bool CompleteAirlockTransition(UnityEngine.Collider2D other) { transitions++; return true; }
 }

@@ -1,0 +1,76 @@
+fileFormatVersion: 2
+guid: 062783d4b67d4364a246737aa5ddb141
+TextureImporter:
+  serializedVersion: 13
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: Airlock_SlightlyOpen
+  externalObjects: {}
+  mipmaps:
+    enableMipMap: 0
+    sRGBTexture: 1
+  isReadable: 0
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  maxTextureSize: 4096
+  textureCompression: 0
+  spriteMode: 2
+  spriteMeshType: 0
+  spritePixelsToUnits: 76
+  spriteAlignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  nPOTScale: 0
+  textureType: 8
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 100
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Airlock_SlightlyOpen
+      rect:
+        serializedVersion: 2
+        x: 1255
+        y: 474
+        width: 190
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a58aafed35cb4c7fbcc078ab0edb13d3
+      internalID: 21300000
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Airlock_SlightlyOpen: 21300000
+  userData:
+  assetBundleName:
+  assetBundleVariant:
