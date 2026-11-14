@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net11.0</TargetFramework><UseAppHost>false</UseAppHost></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Assets/Scripts/TransmissionClassifier.cs" />
+    <Compile Include="../../Assets/Scripts/CommunicationsModel.cs" />
+    <Compile Include="../../Assets/Scripts/MarsClock.cs" />
+    <Compile Include="../../Assets/Scripts/DishAlignmentModel.cs" />
+    <Compile Include="../SatelliteChecks/UnityStubs.cs" />
+  </ItemGroup>
+</Project>
