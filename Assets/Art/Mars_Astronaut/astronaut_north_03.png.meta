@@ -103,9 +103,9 @@ TextureImporter:
       name: astronaut_north_03_0
       rect:
         serializedVersion: 2
-        x: 64
+        x: 62
         y: 16
-        width: 128
+        width: 132
         height: 220
       alignment: 0
       pivot: {x: 0, y: 0}

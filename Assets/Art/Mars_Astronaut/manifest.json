@@ -1,20 +1,22 @@
 {
-  "atlas": "astronaut_walk_4dir_atlas_256.png",
-  "cell_size_px": 256,
-  "columns": 4,
-  "rows": 4,
-  "rows_top_to_bottom": [
+  "frames_per_direction": 4,
+  "directions": [
     "north",
     "east",
     "south",
     "west"
   ],
-  "columns_left_to_right": "4 looping walk-cycle frames",
-  "idle_frames": "first frame of each row",
-  "recommended_walk_fps": 6.5,
-  "sprite_pivot_normalized": [
-    0.5,
-    0.06
+  "size": [
+    256,
+    256
   ],
-  "notes": "Unity texture type Sprite (2D and UI), Sprite Mode Multiple, slice Grid By Cell Size 256x256. Transparent backgrounds; frames aligned to feet. Use row-0 north, row-1 east, row-2 south, row-3 west."
+  "frame_pattern": [
+    "idle",
+    "step_left",
+    "idle",
+    "step_right"
+  ],
+  "recommended_fps": 6,
+  "sprite_pivot": "bottom center",
+  "notes": "north/south frame3 mirrored stride1, east/west use original opposite step"
 }
