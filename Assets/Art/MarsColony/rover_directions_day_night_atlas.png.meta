@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: acc2c3049a5ca394a8ea93e4f3d0f691
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2532671319798651089
+    second: rover_directions_day_night_atlas_0
+  - first:
+      213: -2921144787773425446
+    second: rover_directions_day_night_atlas_1
+  - first:
+      213: -708704930581355607
+    second: rover_directions_day_night_atlas_2
+  - first:
+      213: -5908880313823613666
+    second: rover_directions_day_night_atlas_3
+  - first:
+      213: 3045816942023516875
+    second: rover_directions_day_night_atlas_4
+  - first:
+      213: 511860918526889621
+    second: rover_directions_day_night_atlas_5
+  - first:
+      213: -8793459726877749361
+    second: rover_directions_day_night_atlas_6
+  - first:
+      213: 1709483039312563488
+    second: rover_directions_day_night_atlas_7
+  - first:
+      213: 3004532750284789696
+    second: rover_directions_day_night_atlas_8
+  - first:
+      213: 4498210136119310845
+    second: rover_directions_day_night_atlas_9
+  - first:
+      213: -1665087453864117030
+    second: rover_directions_day_night_atlas_10
+  - first:
+      213: -1708070715111779224
+    second: rover_directions_day_night_atlas_11
+  - first:
+      213: 7840552428691992631
+    second: rover_directions_day_night_atlas_12
+  - first:
+      213: -6850365835979328115
+    second: rover_directions_day_night_atlas_13
+  - first:
+      213: 8518306755644135727
+    second: rover_directions_day_night_atlas_14
+  - first:
+      213: -7546697934864481872
+    second: rover_directions_day_night_atlas_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_0
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 525
+        width: 199
+        height: 294
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f27e4927ad42adcd0800000000000000
+      internalID: -2532671319798651089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_1
+      rect:
+        serializedVersion: 2
+        x: 514
+        y: 516
+        width: 321
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad8f74bda420677d0800000000000000
+      internalID: -2921144787773425446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_2
+      rect:
+        serializedVersion: 2
+        x: 973
+        y: 572
+        width: 294
+        height: 199
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a3612ade9c2a26f0800000000000000
+      internalID: -708704930581355607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_3
+      rect:
+        serializedVersion: 2
+        x: 1412
+        y: 509
+        width: 320
+        height: 321
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1dae3249a07ffda0800000000000000
+      internalID: -5908880313823613666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_4
+      rect:
+        serializedVersion: 2
+        x: 1916
+        y: 525
+        width: 199
+        height: 294
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc2ad201f5ae44a20800000000000000
+      internalID: 3045816942023516875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_5
+      rect:
+        serializedVersion: 2
+        x: 2301
+        y: 508
+        width: 321
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59e433f1bce7a1700800000000000000
+      internalID: 511860918526889621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_6
+      rect:
+        serializedVersion: 2
+        x: 2765
+        y: 573
+        width: 294
+        height: 199
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8f8fb8d7fa57f580800000000000000
+      internalID: -8793459726877749361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_7
+      rect:
+        serializedVersion: 2
+        x: 3196
+        y: 514
+        width: 320
+        height: 321
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02dc7cb54cd49b710800000000000000
+      internalID: 1709483039312563488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_8
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 78
+        width: 201
+        height: 291
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c790c02e9e32b920800000000000000
+      internalID: 3004532750284789696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_9
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 68
+        width: 321
+        height: 319
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df9f378494adc6e30800000000000000
+      internalID: 4498210136119310845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_10
+      rect:
+        serializedVersion: 2
+        x: 974
+        y: 123
+        width: 291
+        height: 201
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adc387068cb64e8e0800000000000000
+      internalID: -1665087453864117030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_11
+      rect:
+        serializedVersion: 2
+        x: 1412
+        y: 59
+        width: 319
+        height: 321
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 864d38efbb6bb48e0800000000000000
+      internalID: -1708070715111779224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_12
+      rect:
+        serializedVersion: 2
+        x: 1915
+        y: 79
+        width: 201
+        height: 291
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 730330394ec3fcc60800000000000000
+      internalID: 7840552428691992631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_13
+      rect:
+        serializedVersion: 2
+        x: 2299
+        y: 61
+        width: 321
+        height: 319
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d85faf4219c9ee0a0800000000000000
+      internalID: -6850365835979328115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_14
+      rect:
+        serializedVersion: 2
+        x: 2767
+        y: 124
+        width: 291
+        height: 201
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f299af1ccda173670800000000000000
+      internalID: 8518306755644135727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rover_directions_day_night_atlas_15
+      rect:
+        serializedVersion: 2
+        x: 3197
+        y: 68
+        width: 319
+        height: 321
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b18a3d563eb44790800000000000000
+      internalID: -7546697934864481872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      rover_directions_day_night_atlas_0: -2532671319798651089
+      rover_directions_day_night_atlas_1: -2921144787773425446
+      rover_directions_day_night_atlas_10: -1665087453864117030
+      rover_directions_day_night_atlas_11: -1708070715111779224
+      rover_directions_day_night_atlas_12: 7840552428691992631
+      rover_directions_day_night_atlas_13: -6850365835979328115
+      rover_directions_day_night_atlas_14: 8518306755644135727
+      rover_directions_day_night_atlas_15: -7546697934864481872
+      rover_directions_day_night_atlas_2: -708704930581355607
+      rover_directions_day_night_atlas_3: -5908880313823613666
+      rover_directions_day_night_atlas_4: 3045816942023516875
+      rover_directions_day_night_atlas_5: 511860918526889621
+      rover_directions_day_night_atlas_6: -8793459726877749361
+      rover_directions_day_night_atlas_7: 1709483039312563488
+      rover_directions_day_night_atlas_8: 3004532750284789696
+      rover_directions_day_night_atlas_9: 4498210136119310845
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

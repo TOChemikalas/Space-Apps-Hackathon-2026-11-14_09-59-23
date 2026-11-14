@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdcaed602eec4635b220fbb86a1806f8, type: 3}
+  m_Name: Potatoes
+  m_EditorClassIdentifier:
+  cropId: potato
+  displayName: Potatoes
+  earthDays: 90
+  growthSprites:
+  - {fileID: 21300000, guid: b37626a3cb934d5db290c8c56011b765, type: 3}
+  - {fileID: 21300000, guid: d1fc9836d63a452a97120679ec27590a, type: 3}
+  - {fileID: 21300000, guid: a5ecd3be41884c9c98f575d2d3504a85, type: 3}
+  - {fileID: 21300000, guid: 19f8b78005bb4c1a8464c266113ed155, type: 3}
+  - {fileID: 21300000, guid: 5693c1c990c645fc8c8531f2b5387ca2, type: 3}
+  - {fileID: 21300000, guid: 619711e0e8144735be069522fcb68dbb, type: 3}
+  harvestQuantity: 1

@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 7fc35533c3622f340a5f248cf2f2b595
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -798595221123418833
+    second: astronaut_walk_4dir_atlas_256_0
+  - first:
+      213: -7986529100559527015
+    second: astronaut_walk_4dir_atlas_256_1
+  - first:
+      213: 8471814336453592918
+    second: astronaut_walk_4dir_atlas_256_2
+  - first:
+      213: 3368461569386242940
+    second: astronaut_walk_4dir_atlas_256_3
+  - first:
+      213: 8736609046708566782
+    second: astronaut_walk_4dir_atlas_256_4
+  - first:
+      213: 1734070556866667764
+    second: astronaut_walk_4dir_atlas_256_5
+  - first:
+      213: -2590948554894893826
+    second: astronaut_walk_4dir_atlas_256_6
+  - first:
+      213: 7850484770554457233
+    second: astronaut_walk_4dir_atlas_256_7
+  - first:
+      213: -6573507467356046980
+    second: astronaut_walk_4dir_atlas_256_8
+  - first:
+      213: 701391272394834908
+    second: astronaut_walk_4dir_atlas_256_9
+  - first:
+      213: 8294881450244220328
+    second: astronaut_walk_4dir_atlas_256_10
+  - first:
+      213: 6484896660511352887
+    second: astronaut_walk_4dir_atlas_256_11
+  - first:
+      213: -2321213000337108295
+    second: astronaut_walk_4dir_atlas_256_12
+  - first:
+      213: 8862341191349364077
+    second: astronaut_walk_4dir_atlas_256_13
+  - first:
+      213: -8982519605349471331
+    second: astronaut_walk_4dir_atlas_256_14
+  - first:
+      213: 5004328958623615091
+    second: astronaut_walk_4dir_atlas_256_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_0
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 784
+        width: 131
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f253d95a0e1dae4f0800000000000000
+      internalID: -798595221123418833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_1
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 784
+        width: 132
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99354d4f8162a2190800000000000000
+      internalID: -7986529100559527015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_2
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 784
+        width: 125
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 657c06fd04ee19570800000000000000
+      internalID: 8471814336453592918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_3
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 784
+        width: 128
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7362d253fd2fbe20800000000000000
+      internalID: 3368461569386242940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_4
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 528
+        width: 122
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efa3782b3abae3970800000000000000
+      internalID: 8736609046708566782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_5
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 528
+        width: 134
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f46085ebf7a01810800000000000000
+      internalID: 1734070556866667764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_6
+      rect:
+        serializedVersion: 2
+        x: 578
+        y: 528
+        width: 123
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efc9d2a440a1b0cd0800000000000000
+      internalID: -2590948554894893826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_7
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 528
+        width: 142
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19c238f1e4682fc60800000000000000
+      internalID: 7850484770554457233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_8
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 272
+        width: 137
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c797ddf49c536c4a0800000000000000
+      internalID: -6573507467356046980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_9
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 272
+        width: 135
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd347a765a7dbb900800000000000000
+      internalID: 701391272394834908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_10
+      rect:
+        serializedVersion: 2
+        x: 572
+        y: 272
+        width: 135
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a5a8c71bb65d1370800000000000000
+      internalID: 8294881450244220328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_11
+      rect:
+        serializedVersion: 2
+        x: 829
+        y: 272
+        width: 134
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73865ee772bfef950800000000000000
+      internalID: 6484896660511352887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_12
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 16
+        width: 126
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b253e2131569cfd0800000000000000
+      internalID: -2321213000337108295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_13
+      rect:
+        serializedVersion: 2
+        x: 313
+        y: 16
+        width: 141
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d65e0bcdb5c5dfa70800000000000000
+      internalID: 8862341191349364077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_14
+      rect:
+        serializedVersion: 2
+        x: 578
+        y: 16
+        width: 123
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9ba927a20ea75380800000000000000
+      internalID: -8982519605349471331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: astronaut_walk_4dir_atlas_256_15
+      rect:
+        serializedVersion: 2
+        x: 820
+        y: 16
+        width: 151
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37806fd7ca2f27540800000000000000
+      internalID: 5004328958623615091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      astronaut_walk_4dir_atlas_256_0: -798595221123418833
+      astronaut_walk_4dir_atlas_256_1: -7986529100559527015
+      astronaut_walk_4dir_atlas_256_10: 8294881450244220328
+      astronaut_walk_4dir_atlas_256_11: 6484896660511352887
+      astronaut_walk_4dir_atlas_256_12: -2321213000337108295
+      astronaut_walk_4dir_atlas_256_13: 8862341191349364077
+      astronaut_walk_4dir_atlas_256_14: -8982519605349471331
+      astronaut_walk_4dir_atlas_256_15: 5004328958623615091
+      astronaut_walk_4dir_atlas_256_2: 8471814336453592918
+      astronaut_walk_4dir_atlas_256_3: 3368461569386242940
+      astronaut_walk_4dir_atlas_256_4: 8736609046708566782
+      astronaut_walk_4dir_atlas_256_5: 1734070556866667764
+      astronaut_walk_4dir_atlas_256_6: -2590948554894893826
+      astronaut_walk_4dir_atlas_256_7: 7850484770554457233
+      astronaut_walk_4dir_atlas_256_8: -6573507467356046980
+      astronaut_walk_4dir_atlas_256_9: 701391272394834908
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
