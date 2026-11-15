@@ -10,6 +10,7 @@ public sealed class CommunicationsSession : MonoBehaviour
     [SerializeField, Min(0)] float acknowledgmentDelaySeconds = 60;
     [SerializeField] LateSupplyPolicy lateSupplyPolicy;
     [SerializeField] bool hardwareOperational = true;
+    [SerializeField] DroneCrashSite droneCrashSite;
     [Serializable] sealed class Save
     {
         public CommunicationsState communications = new CommunicationsState();
@@ -68,15 +69,16 @@ public sealed class CommunicationsSession : MonoBehaviour
 
     void CreateModel()
     {
-        var definitions = new TransmissionDefinition[messages.Length];
+        var definitions = new TransmissionDefinition[messages.Length + (droneCrashSite ? 1 : 0)];
         for (int i = 0; i < messages.Length; i++) definitions[i] = messages[i] ? messages[i].message : null;
+        if (droneCrashSite) definitions[messages.Length] = droneCrashSite.DiscoveryMessage();
         model = new CommunicationsModel(shared.communications, definitions, MarsClock.SecondsPerSol,
             acknowledgmentDelaySeconds, lateSupplyPolicy);
         model.Changed += OnChanged;
     }
 
-    void OnClockAdvanced(double from, double to) => model.Advance(to);
-    void OnLinkChanged() => model.SetOnline(hardwareOperational && owner.IsSatelliteAligned, clock.Seconds);
+    void OnClockAdvanced(double from, double to) { OnLinkChanged(); model.Advance(to); }
+    void OnLinkChanged() => model.SetOnline(hardwareOperational && owner.IsSatelliteAligned && owner.CommunicationsPowered, clock.Seconds);
     public void SetHardwareOperational(bool operational) { hardwareOperational = operational; OnLinkChanged(); }
     public bool Transmit(string body) => model.Submit(body, clock.Seconds);
     public bool QueueMessage(string id) => model.QueueMessage(id, clock.Seconds);

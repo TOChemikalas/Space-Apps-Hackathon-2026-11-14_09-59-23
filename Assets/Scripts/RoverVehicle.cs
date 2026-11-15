@@ -55,6 +55,18 @@ public class RoverVehicle : MonoBehaviour
 
     private void StepBattery(double seconds)
     {
+        StepBatteryCharge(seconds);
+        RefreshOxygenSupply();
+    }
+
+    private void RefreshOxygenSupply()
+    {
+        if (driver && driver.TryGetComponent<MissionSurvival>(out var survival))
+            survival.SetRoverSupply(occupied, charge > 0);
+    }
+
+    private void StepBatteryCharge(double seconds)
+    {
         double simulatedHours = seconds * 24 / MarsClock.SecondsPerSol;
         if (IsConnected)
         {
@@ -166,6 +178,7 @@ public class RoverVehicle : MonoBehaviour
                 return;
             }
             occupied = true;
+            RefreshOxygenSupply();
             body.bodyType = RigidbodyType2D.Dynamic;
             driverClearance = Vector2.zero;
             if (driverBody.TryGetComponent<Collider2D>(out var driverCollider))
@@ -216,6 +229,7 @@ public class RoverVehicle : MonoBehaviour
     private void Park()
     {
         occupied = false;
+        RefreshOxygenSupply();
         driveInput = Vector2.zero;
         body.linearVelocity = Vector2.zero;
         body.angularVelocity = 0f;

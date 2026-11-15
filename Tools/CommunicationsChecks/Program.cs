@@ -154,6 +154,18 @@ static class Checks
         Check(dish.IsLocked && dish.CanAcquire, "Physical lock restoration");
         dish.Restore(0, 0, 132.6, 37.4, true);
         Check(!dish.IsLocked, "Invalid saved pose cannot claim online");
+        var discovery = new[] { new TransmissionDefinition { id = "survey.drone_crash", fromEarth = false,
+            sender = "SURFACE SURVEY", subject = "Drone crash site located",
+            body = "A drone was located at (3000, 0) metres relative to the main base.", sol = 1 } };
+        model = Model(discovery); model.Advance(100);
+        Check(Received(model) == 0, "Discovery waits for an available communications link");
+        model.SetOnline(true, 100);
+        Check(Received(model) == 1 && !model.State.messages[0].read, "Discovery arrives unread for notification");
+        model.MarkRead("survey.drone_crash");
+        Check(model.State.messages[0].read, "Opening discovery activates its persisted read marker");
+        restored = JsonSerializer.Deserialize<CommunicationsState>(JsonSerializer.Serialize(model.State, options), options);
+        model = Model(discovery, state: restored); model.SetOnline(true, 200); model.Advance(300);
+        Check(Received(model) == 1 && model.State.messages[0].read, "Discovery tracking survives reload without duplicate notifications");
         Console.WriteLine($"PASS: {passed} production communications, classifier, clock and dish assertions. No gameplay saves accessed.");
     }
 }

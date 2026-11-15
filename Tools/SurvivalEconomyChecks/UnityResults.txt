@@ -1,0 +1,25 @@
+Unity 6000.5.10f1, isolated copied project, Direct3D 11 batch Play Mode.
+Unique EconomyCheck-* test save profile; normal gameplay saves not used.
+15 native assertions passed. Visual layout and pointer ergonomics not manually verified.
+Final random-solar-fault default changed to zero after this run; scenarios already disable weather.
+
+CHECK PASS: A shared production economy binding
+CHECK PASS: A native survival outcome
+CHECK PASS: A live oxygen HUD value
+ECONOMY A: time=98.64h health=1.000 oxygen=8.000 temp=20.00
+CHECK PASS: B shared production economy binding
+CHECK PASS: B native survival outcome
+CHECK PASS: B live oxygen HUD value
+CHECK PASS: Crisis sacrifices affect actual systems
+CHECK PASS: Allocation recovery restores irrigation
+ECONOMY B: time=98.64h health=1.000 oxygen=8.000 temp=20.00
+CHECK PASS: C shared production economy binding
+CHECK PASS: C native survival outcome
+CHECK PASS: C live oxygen HUD value
+ECONOMY C: time=94.72h health=0.000 oxygen=0.000 temp=16.69
+CHECK PASS: R shared production economy binding
+CHECK PASS: Recovery starts with depleted batteries
+CHECK PASS: R native survival outcome
+CHECK PASS: R live oxygen HUD value
+ECONOMY R: time=147.96h health=1.000 oxygen=8.000 temp=20.00
+ECONOMY UNITY PASS: 15

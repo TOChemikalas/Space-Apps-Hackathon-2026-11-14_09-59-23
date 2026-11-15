@@ -11,6 +11,12 @@ public sealed class MarsWatch : MonoBehaviour
     [SerializeField] private Camera worldCamera;
     [SerializeField] private Transform astronaut;
     [SerializeField] private Sprite oxygenIcon, waterIcon, foodIcon, powerIcon;
+    [SerializeField] private CommunicationsSession communications;
+    [SerializeField] private Texture2D notificationArtwork;
+    private GameObject messageNotification;
+    private RectTransform crashArrow;
+    private Text crashDistance;
+    private Sprite notificationSprite;
 
     private const int Width = 218;
     private const int MapSize = 208;
@@ -23,7 +29,7 @@ public sealed class MarsWatch : MonoBehaviour
     private static readonly Color32 Shadow = new Color32(8, 10, 13, 255);
 
     private RectTransform status, map;
-    private Text readout, survivalWarning;
+    private Text readout;
     private Meter oxygen, water, food, power;
 
     private sealed class Meter
@@ -63,10 +69,16 @@ public sealed class MarsWatch : MonoBehaviour
         water = AddMeter("Water", waterIcon, new Color32(67, 215, 240, 255), 100);
         food = AddMeter("Food", foodIcon, new Color32(250, 157, 54, 255), 145);
         power = AddMeter("Power", powerIcon, Amber, 190);
-        survivalWarning = Label(status, "Critical survival resources", new Rect(1, 234, Width, 60), "",
-            17, TextAnchor.UpperLeft, FontStyle.Bold);
-        survivalWarning.color = WarningRed;
         if (worldCamera && astronaut) BuildMap();
+        if (notificationArtwork)
+        {
+            notificationSprite = Sprite.Create(notificationArtwork, new Rect(0, 0, notificationArtwork.width, notificationArtwork.height), new Vector2(.5f, .5f));
+            var icon = Image(status, "Unread communications notification", new Rect(180, 242, 34, 34), Color.white);
+            icon.sprite = notificationSprite;
+            icon.preserveAspect = true;
+            messageNotification = icon.gameObject;
+            messageNotification.SetActive(false);
+        }
     }
 
     private Meter AddMeter(string title, Sprite icon, Color tint, int top)
@@ -122,6 +134,14 @@ public sealed class MarsWatch : MonoBehaviour
         mapCamera.targetTexture = mapTexture;
         mapCamera.aspect = 1;
         mapCamera.depth = worldCamera.depth - 1;
+        var arrow = Label(map, "Crash site direction", new Rect(0, 0, 24, 24), "▲", 24, TextAnchor.MiddleCenter, FontStyle.Bold);
+        arrow.color = WarningRed;
+        arrow.raycastTarget = false;
+        crashArrow = arrow.rectTransform;
+        crashArrow.pivot = new Vector2(.5f, .5f);
+        crashArrow.gameObject.SetActive(false);
+        crashDistance = Label(map, "Crash site distance", new Rect(0, 220, MapSize, 26), "", 16, TextAnchor.MiddleCenter);
+        crashDistance.gameObject.SetActive(false);
     }
 
     private void LateUpdate()
@@ -133,9 +153,10 @@ public sealed class MarsWatch : MonoBehaviour
         if (map)
         {
             map.localScale = status.localScale;
-            Vector3 position = astronaut.position;
+            Vector3 position = RoverVehicle.Instance && RoverVehicle.Instance.IsOccupied ? RoverVehicle.Instance.transform.position : astronaut.position;
             mapCamera.transform.position = new Vector3(position.x, position.y, worldCamera.transform.position.z);
         }
+        UpdateDiscovery();
 
         int minute = Mathf.Clamp((int)(clock.Hour * 60d + 1e-8), 0, 1439);
         int sol = clock.Sol;
@@ -155,10 +176,8 @@ public sealed class MarsWatch : MonoBehaviour
             oxygen.Set(survival.Oxygen, lowOxygen);
             water.Set(survival.Hydration, lowWater);
             food.Set(survival.Nutrition, lowFood);
-            survivalWarning.text = (lowOxygen ? "Oxygen critical\n" : "")
-                + (lowWater ? "Water critical\n" : "") + (lowFood ? "Food critical" : "");
         }
-        if (energy && energy.TryGetBatteryCharge(out float charge)) power.Set(charge);
+        if (energy && energy.TryGetBatteryCharge(out float charge)) power.Set(charge, charge < .2f);
     }
 
     private static Image PanelImage(Transform parent, string label, Sprite sprite, Rect rect)
@@ -166,6 +185,32 @@ public sealed class MarsWatch : MonoBehaviour
         var image = Image(parent, label, rect, Color.white);
         image.sprite = sprite;
         return image;
+    }
+
+    private void UpdateDiscovery()
+    {
+        bool unread = false, discovered = false;
+        if (communications && communications.Model != null)
+            foreach (var message in communications.Model.State.messages)
+            {
+                if (message.status != DeliveryStatus.Received) continue;
+                unread |= !message.read;
+                if (message.id == DroneCrashSite.MessageId) discovered = message.read;
+            }
+        if (messageNotification) messageNotification.SetActive(unread);
+        if (!crashArrow) return;
+        var site = DroneCrashSite.Instance;
+        bool show = discovered && site;
+        crashArrow.gameObject.SetActive(show);
+        crashDistance.gameObject.SetActive(show);
+        if (!show) return;
+        Vector3 origin = survival && survival.Economy != null && !survival.Economy.InRover && (survival.Economy.InHabitat || survival.Economy.InGreenhouse)
+            ? site.BasePosition : mapCamera.transform.position;
+        Vector2 offset = site.transform.position - origin;
+        Vector2 direction = mapCamera.transform.InverseTransformDirection(new Vector3(offset.x, offset.y, 0));
+        crashArrow.anchoredPosition = new Vector2(104, -112) + direction.normalized * Mathf.Min(80, direction.magnitude / mapCamera.orthographicSize * 94);
+        crashArrow.localRotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90);
+        crashDistance.text = offset.magnitude < 10 ? "Crash site reached" : $"Drone · {offset.magnitude / 1000f:0.00} km";
     }
 
     private static Sprite MakeSprite(string name, int width, int height, System.Func<int, int, Color32> pixel)
@@ -214,6 +259,7 @@ public sealed class MarsWatch : MonoBehaviour
         if (map) Destroy(map.gameObject);
         if (mapCamera) Destroy(mapCamera.gameObject);
         if (mapTexture) Destroy(mapTexture);
+        if (notificationSprite) Destroy(notificationSprite);
         foreach (var sprite in new[] { clockFrame, rowFrame, mapRing, mapDisc })
         {
             if (!sprite) continue;

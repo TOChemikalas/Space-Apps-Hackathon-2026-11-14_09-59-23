@@ -26,6 +26,7 @@ public sealed class ElectricalControls : MonoBehaviour
     Text selectionGeneration, selectionDemand, selectionSignal, selectionStatus, selectionAvailable;
     [SerializeField] DishAlignmentModel dish = new DishAlignmentModel();
     public DishAlignmentModel Dish => dish;
+    public bool CommunicationsPowered => energy && energy.Survival != null && energy.Survival.Communications >= .5;
     public bool IsSatelliteAligned => dish.IsLocked;
     public event System.Action SatelliteAligned;
     [SerializeField] LayerMask obstacleMask = 1 << 6;
@@ -35,6 +36,10 @@ public sealed class ElectricalControls : MonoBehaviour
     readonly GameObject[] pages = new GameObject[3];
     readonly Text[] pointValues = new Text[PowerAllocation.SystemCount];
     readonly Image[] pointBars = new Image[PowerAllocation.SystemCount];
+    readonly RectTransform[] minimumMarkers = new RectTransform[PowerAllocation.SystemCount];
+    readonly Text[] minimumLabels = new Text[PowerAllocation.SystemCount];
+    static readonly Color AllocationRed = new Color32(255, 79, 79, 255);
+    static readonly string[] allocationLoss = { "Faster water loss", "Oxygen reserve falls", "Slower crop growth", "Habitat warms", "Habitat cools", "Slower suit servicing", "Earth link offline" };
     readonly Button[] systemRows = new Button[PowerAllocation.SystemCount];
     readonly Button[] addButtons = new Button[PowerAllocation.SystemCount];
     readonly Button[] removeButtons = new Button[PowerAllocation.SystemCount];
@@ -56,6 +61,7 @@ public sealed class ElectricalControls : MonoBehaviour
     MissionSurvival survival;
     Button recyclerUpgrade;
     Text recyclerLabel;
+    Text allocationDelivery;
     Screen screen, equipmentScreen;
 
     void Awake()
@@ -219,7 +225,6 @@ public sealed class ElectricalControls : MonoBehaviour
         BuildSelection();
         terminal = new CommunicationsTerminalUI(content, communications, transmissionArtwork, incomingOnlineArtwork,
             incomingOfflineArtwork, () => Show(Screen.Communications));
-        Action(regular, "Allocate power", new Rect(1280, 73, 470, 76), () => Show(Screen.Allocation), size: 40);
         overlay.gameObject.SetActive(false);
     }
 
@@ -288,14 +293,18 @@ public sealed class ElectricalControls : MonoBehaviour
             pointValues[i] = Label(row.transform, "Allocated points", new Rect(360, 0, 130, 108), "", 38, TextAnchor.MiddleRight);
             Image(row.transform, "Budget bar track", new Rect(510, 42, 190, 25), Border);
             pointBars[i] = Image(row.transform, "Share of point budget", new Rect(510, 42, 0, 25), Green);
+            var marker = Image(row.transform, "Minimum allocation red line", new Rect(510, 35, 4, 39), AllocationRed);
+            marker.raycastTarget = false;
+            minimumMarkers[i] = marker.rectTransform;
+            minimumLabels[i] = Label(row.transform, "Minimum allocation", new Rect(510, 77, 190, 25), "", 20);
+            minimumLabels[i].raycastTarget = false;
             removeButtons[i] = Action(row.transform, "−", new Rect(725, 10, 78, 84), () => Change(index, false), Orange, 56);
             addButtons[i] = Action(row.transform, "+", new Rect(815, 10, 78, 84), () => Change(index, true), Orange, 56);
         }
         Action(allocationPage, "Back to electricity", new Rect(2115, 1240, 493, 123), ShowEquipment);
         Button(allocationPage, "Close allocation", new Rect(2530, 263, 92, 94), Color.clear, ShowEquipment);
         Button(allocationPage, "Allocation back", new Rect(25, 1408, 310, 118), Color.clear, ShowEquipment);
-        var note = Field(allocationPage, "Allocation applies immediately", new Rect(1720, 1370, 900, 35), 24);
-        Set(note, "Changes apply immediately. Points are separate from kW.");
+        allocationDelivery = Field(allocationPage, "Delivered power", new Rect(1720, 1370, 900, 60), 24);
         allocationPage.gameObject.SetActive(false);
     }
 
@@ -348,6 +357,8 @@ public sealed class ElectricalControls : MonoBehaviour
     void RefreshAllocation()
     {
         var allocation = energy.Allocation;
+        if (energy.Survival != null) Set(allocationDelivery,
+            $"Below the line: {allocationLoss[selectedSystem]}. Markers assume sufficient power.\nDelivered / requested: {energy.Survival.Delivered[selectedSystem]:0.00} / {energy.Survival.Requested[selectedSystem]:0.00} kW");
         Set(unassigned, $"{allocation.Unassigned} points unassigned");
         if (recyclerUpgrade)
         {
@@ -362,6 +373,12 @@ public sealed class ElectricalControls : MonoBehaviour
             Set(pointValues[i], $"{points} pts");
             systemRows[i].targetGraphic.color = i == selectedSystem ? new Color(.10f, .25f, .13f) : Background;
             pointBars[i].rectTransform.sizeDelta = new Vector2(allocation.Budget > 0 ? 190f * points / allocation.Budget : 0, 25);
+            int minimum = energy.Survival?.MinimumAllocation((ElectricalSystem)i) ?? 0;
+            bool below = points < minimum;
+            minimumMarkers[i].gameObject.SetActive(minimum > 0);
+            minimumMarkers[i].anchoredPosition = new Vector2(510 + 190f * Mathf.Clamp01((float)minimum / Math.Max(1, allocation.Budget)) - 2, -35);
+            Set(minimumLabels[i], minimum > 0 ? $"Min {minimum} pts" : "No minimum now");
+            pointBars[i].color = below ? AllocationRed : Green;
             addButtons[i].gameObject.SetActive(i == selectedSystem);
             removeButtons[i].gameObject.SetActive(i == selectedSystem);
             addButtons[i].interactable = allocation.Unassigned > 0;

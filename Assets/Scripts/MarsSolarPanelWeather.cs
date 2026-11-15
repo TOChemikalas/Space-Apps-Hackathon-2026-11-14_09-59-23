@@ -31,7 +31,8 @@ public sealed class MarsSolarPanelWeather : MonoBehaviour
     public float integrityLossPerStormSol = 0.02f;
 
     [Min(0f)]
-    public float peakFaultChancePerSol = 0.06f;
+    // Keep unrecoverable random outages disabled until player repair is implemented.
+    public float peakFaultChancePerSol = 0f;
 
     [Header("Simulation")]
     [Min(0.05f)]

@@ -5,8 +5,10 @@ namespace UnityEngine
     {
         public bool isActiveAndEnabled = true;
         public static implicit operator bool(MonoBehaviour value) => value != null;
+        public T GetComponent<T>() where T : class => null;
     }
     public class SerializeField : System.Attribute { }
+    public class HeaderAttribute : System.Attribute { public HeaderAttribute(string value) {} }
     public class MinAttribute : System.Attribute { public MinAttribute(float value) {} }
     public class RangeAttribute : System.Attribute { public RangeAttribute(float min, float max) {} }
     public class DefaultExecutionOrder : System.Attribute { public DefaultExecutionOrder(int value) {} }
@@ -24,3 +26,9 @@ namespace UnityEngine
     }
 }
 public class MarsLighting : UnityEngine.MonoBehaviour { public float startingLs = 90; }
+// Weather is disabled for the clear-sky electricity tests.
+public class MarsSolarPanelWeather : UnityEngine.MonoBehaviour
+{
+    public double OutputMultiplier => 1;
+    public double OutputMultiplierAt(double seconds) => 1;
+}

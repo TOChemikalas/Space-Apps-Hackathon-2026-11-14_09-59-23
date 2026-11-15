@@ -45,6 +45,7 @@ public sealed class GrowingBed : MonoBehaviour
     public GrowingBedMenu Menu { get; private set; }
 
     MarsClock growthClock;
+    double lastGrowthIntegral;
     LineRenderer outline;
     Material outlineMaterial;
     readonly PlantSlot[] slots = new PlantSlot[SlotCount];
@@ -56,6 +57,8 @@ public sealed class GrowingBed : MonoBehaviour
     {
         var progress = slots[index].Progress;
         float multiplier = growthMultiplier * EnvironmentMultiplier;
+        var economy = Greenhouse.Survival?.Economy;
+        if (economy != null) multiplier *= (float)(economy.Irrigation * economy.CropCondition * Math.Clamp(economy.TemperatureC / 20, 0, 1));
         return multiplier > 0 ? (progress.DurationSeconds - progress.ElapsedSeconds) / multiplier : double.PositiveInfinity;
     }
 
@@ -107,6 +110,7 @@ public sealed class GrowingBed : MonoBehaviour
         growthClock = Greenhouse.Clock;
         // The colony clock continues advancing plants while their room is inactive.
         growthClock.Advanced += OnAdvanced;
+        lastGrowthIntegral = Greenhouse.Survival?.Economy?.GrowthIntegralSeconds ?? 0;
         if (starterCrop && starterHarvestSol > 0 && Greenhouse.Survival)
         {
             double remaining = Greenhouse.Survival.TimeUntilStarterHarvest(starterHarvestSol);
@@ -136,6 +140,14 @@ public sealed class GrowingBed : MonoBehaviour
     void OnAdvanced(double from, double to)
     {
         float multiplier = growthMultiplier * EnvironmentMultiplier;
+        var economy = Greenhouse.Survival?.Economy;
+        if (economy != null)
+        {
+            double elapsed = Math.Max(0, economy.GrowthIntegralSeconds - lastGrowthIntegral);
+            lastGrowthIntegral = economy.GrowthIntegralSeconds;
+            from = 0;
+            to = elapsed;
+        }
         for (int i = 0; i < SlotCount; i++)
         {
             PlantSlot slot = slots[i];

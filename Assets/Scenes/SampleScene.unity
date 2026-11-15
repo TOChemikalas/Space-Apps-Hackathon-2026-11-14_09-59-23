@@ -940,6 +940,8 @@ MonoBehaviour:
   worldCamera: {fileID: 519420031}
   astronaut: {fileID: 268809155}
   oxygenIcon: {fileID: 2712357080141673454, guid: 72894ab770fba8042a1c4fce0d626ec3, type: 3}
+  communications: {fileID: 2600000002}
+  notificationArtwork: {fileID: 2800000, guid: 648cba6991064a6999e65d5cdad4c359, type: 3}
   waterIcon: {fileID: 8509550459451208454, guid: 4fb21ec1ea048f1488f6635e4b73afed, type: 3}
   foodIcon: {fileID: -1045181238759104467, guid: 52dff058dfede4b42b99874a08b307f5, type: 3}
   powerIcon: {fileID: -2032187774689554106, guid: 26601246be71a554f8dfe8eab3f9c272, type: 3}
@@ -2510,6 +2512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   demandKW: 5
+  replacedBySurvivalEconomy: 1
 --- !u!114 &2000000006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2553,7 +2556,7 @@ MonoBehaviour:
   faulted: 0
   dustAccumulationPerStormSol: 0.45
   integrityLossPerStormSol: 0.02
-  peakFaultChancePerSol: 0.06
+  peakFaultChancePerSol: 0
   sampleStepHours: 0.25
 --- !u!1 &2000000010
 GameObject:
@@ -4445,6 +4448,7 @@ SceneRoots:
   - {fileID: 2000000011}
   - {fileID: 2000000021}
   - {fileID: 2600000001}
+  - {fileID: 2700000001}
 
 --- !u!114 &2600000002
 MonoBehaviour:
@@ -4455,7 +4459,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cd3a131a2df40b29b8ebe6b7d2154f6, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::CommunicationsSession
+  droneCrashSite: {fileID: 2700000002}
   messages: []
   acknowledgmentDelaySeconds: 60
   lateSupplyPolicy: 0
   hardwareOperational: 1
+--- !u!1 &2700000000
+GameObject:
+  m_ObjectHideFlags: 0
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2700000001}
+  - component: {fileID: 2700000002}
+  m_Layer: 0
+  m_Name: Drone crash site - 3 km east
+  m_TagString: Untagged
+  m_IsActive: 1
+--- !u!4 &2700000001
+Transform:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 2700000000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2990.5964, y: 1.31376, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &2700000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 2700000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: b9c937ae287145bf9a01afe8ca32b90d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DroneCrashSite
+  mainBase: {fileID: 1897458969}
+  artwork: {fileID: 2800000, guid: b787a1c378fa4bfc993e0e1dc17fdb38, type: 3}
+  offsetMeters: {x: 3000, y: 0}
+  terrain: {fileID: 1540497614}

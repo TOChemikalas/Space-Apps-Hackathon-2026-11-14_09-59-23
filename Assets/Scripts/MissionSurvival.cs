@@ -22,6 +22,7 @@ public sealed class MissionSurvival : MonoBehaviour
     [SerializeField, Min(0)] float initialHabitatWaterLiters = 5.14f;
     [SerializeField, Min(0)] float initialHabitatFoodKg = 3.185f;
     [SerializeField, Min(0)] float harvestKgPerUnit = .10616667f;
+    [SerializeField] SurvivalEconomy.Tuning economyTuning = new SurvivalEconomy.Tuning();
 
     double oxygen = OxygenCapacity, water = WaterCapacity, food = FoodCapacity;
     double habitatWater, habitatFood;
@@ -37,100 +38,75 @@ public sealed class MissionSurvival : MonoBehaviour
     public float Hydration => (float)(water / WaterCapacity);
     public float Nutrition => (float)(food / FoodCapacity);
     public float WaterRecycling => waterRecycling;
+    public SurvivalEconomy Economy { get; private set; }
 
     void Awake()
     {
         habitatWater = initialHabitatWaterLiters;
         habitatFood = initialHabitatFoodKg;
         if (clock) missionStart = clock.Seconds;
+        Economy = new SurvivalEconomy { WaterLiters = initialHabitatWaterLiters, FoodKg = initialHabitatFoodKg,
+            Recycling = waterRecycling, Settings = economyTuning };
+        if (energy) energy.Survival = Economy;
     }
 
     void OnEnable()
     {
-        if (clock) clock.Advanced += Advance;
-        if (energy) energy.BatteryBankDepleted += PowerDepleted;
+        if (energy) energy.SurvivalStepCompleted += AdvanceEconomy;
     }
 
     void OnDisable()
     {
-        if (clock) clock.Advanced -= Advance;
-        if (energy) energy.BatteryBankDepleted -= PowerDepleted;
+        if (energy) energy.SurvivalStepCompleted -= AdvanceEconomy;
     }
 
     public void UpgradeWaterRecycling()
     {
         if (!Failed) waterRecycling = Mathf.Max(waterRecycling, .95f);
+        if (Economy != null) Economy.Recycling = waterRecycling;
     }
 
     public void SetHabitatSupply(bool available)
     {
         if (Failed || inHabitat == available) return;
         inHabitat = available;
-        if (!available) return;
-        oxygen = OxygenCapacity;
-        Resupply();
+        Economy.InHabitat = available;
+    }
+
+    public void SetGreenhouseSupply(bool available)
+    {
+        if (Economy != null) Economy.InGreenhouse = available;
+    }
+
+    public void SetRoverSupply(bool occupied, bool powered)
+    {
+        if (Economy == null) return;
+        Economy.InRover = occupied;
+        Economy.RoverPowered = occupied && powered;
     }
 
     public double TimeUntilStarterHarvest(int sol) =>
-        Math.Max(0, (sol - 1) * MarsClock.SecondsPerSol - missionStart - MissionElapsed);
+        Math.Max(0, (sol - 1) * MarsClock.SecondsPerSol - missionStart - Economy.GrowthIntegralSeconds);
 
     public void AddHarvest(int units)
     {
         if (Failed || units <= 0) return;
-        habitatFood += units * harvestKgPerUnit;
-        if (inHabitat) Resupply();
+        Economy.FoodKg += units * harvestKgPerUnit * Economy.CropCondition;
     }
 
-    void Advance(double from, double to)
+    void AdvanceEconomy(double seconds)
     {
-        double seconds = to - from;
-        if (Failed || seconds <= 0) return;
-        MissionElapsed += seconds;
-        if (!inHabitat) oxygen = Math.Max(0, oxygen - seconds);
-        double sols = seconds / MarsClock.SecondsPerSol;
-        double waterUsed = WaterPerSol * sols;
-        double foodUsed = FoodPerSol * sols;
-        if (inHabitat)
-        {
-            waterUsed -= TakeWater(waterUsed);
-            foodUsed -= TakeFood(foodUsed);
-        }
-
-        water = Math.Max(0, water - waterUsed);
-        food = Math.Max(0, food - foodUsed);
-        if (oxygen <= 0) Fail("Suit oxygen depleted");
-        else if (water <= 0) Fail("Critical dehydration");
-        else if (food <= 0) Fail("Critical malnutrition");
+        MissionElapsed = Economy.ElapsedSeconds;
+        oxygen = Economy.OxygenHours / 8 * OxygenCapacity;
+        water = Economy.SuitWaterLiters;
+        food = Economy.SuitFoodKg;
+        habitatWater = Economy.WaterLiters;
+        habitatFood = Economy.FoodKg;
+        if (Economy.Health <= 0) Fail(Economy.FailureReason);
     }
-
-    void Resupply()
-    {
-        water += TakeWater(WaterCapacity - water);
-        food += TakeFood(FoodCapacity - food);
-    }
-
-    double TakeWater(double requested)
-    {
-        double loss = 1d - waterRecycling;
-        if (loss <= 0) return requested;
-        double provided = Math.Min(requested, habitatWater / loss);
-        habitatWater = Math.Max(0, habitatWater - provided * loss);
-        return provided;
-    }
-
-    double TakeFood(double requested)
-    {
-        double provided = Math.Min(requested, habitatFood);
-        habitatFood -= provided;
-        return provided;
-    }
-
-    void PowerDepleted() => Fail("Colony power depleted");
 
     void LateUpdate()
     {
-        if (!Failed && clock && energy && energy.TryGetBatteryCharge(out float charge) && charge <= 0)
-            Fail("Colony power depleted");
         if (failureCard) CenterAndScale(failureOverlay, failureCard);
     }
 

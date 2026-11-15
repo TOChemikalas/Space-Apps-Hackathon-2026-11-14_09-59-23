@@ -41,6 +41,7 @@ public sealed class GreenhouseInteractionUI : MonoBehaviour
         player = body;
         movement = body.GetComponent<AstronautController>();
         Survival = body.GetComponent<MissionSurvival>();
+        if (Survival) Survival.SetGreenhouseSupply(IsInside);
         hudCanvas = canvas;
     }
 
@@ -86,6 +87,7 @@ public sealed class GreenhouseInteractionUI : MonoBehaviour
     {
         Close();
         IsInside = inside;
+        if (Survival) Survival.SetGreenhouseSupply(inside);
         candidates.Clear();
         SetFocus(null);
     }
@@ -164,8 +166,7 @@ public sealed class GreenhouseInteractionUI : MonoBehaviour
 
     void OnDisable()
     {
-        Close();
-        SetFocus(null);
+        SetInside(false);
         if (hud) hud.gameObject.SetActive(false);
     }
 
